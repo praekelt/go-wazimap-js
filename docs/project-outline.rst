@@ -46,4 +46,4 @@ Useful links
 * `Q promises <https://github.com/kriskowal/q>`_
 * `Javascript <https://developer.mozilla.org/en-US/docs/Web/JavaScript>`_
 * `Lodash <https://lodash.com/docs>`_
-* `Mocha test framework` <http://mochajs.org/>_
+* `Mocha test framework <http://mochajs.org/>`_
