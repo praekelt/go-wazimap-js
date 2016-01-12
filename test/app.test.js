@@ -29,40 +29,51 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:start',
                         reply: [
-                            'Hi there! What do you want to do?',
-                            '1. Show this menu again',
-                            '2. Exit'
+                            'Welcome to Wazimap! What would you like to do?',
+                            '1. Enter a location to query',
+                            '2. Query a random location',
+                            '3. Exit'
                         ].join('\n')
                     })
                     .run();
             });
         });
 
-        describe("when the user asks to see the menu again", function() {
-            it("should show the menu again", function() {
+        describe("when the user asks to query a location", function() {
+            it("should ask them to enter a location", function() {
                 return tester
                     .setup.user.state('states:start')
                     .input('1')
                     .check.interaction({
-                        state: 'states:start',
-                        reply: [
-                            'Hi there! What do you want to do?',
-                            '1. Show this menu again',
-                            '2. Exit'
-                        ].join('\n')
+                        state: 'states:location',
+                        reply: 'Please enter a location on National, Provincial or Ward level to query:'                       
+                    })
+                    .run();
+            });
+        });
+
+     describe("when the user asks to query a random location", function() {
+            it("should return a random location with query data", function() {
+                return tester
+                    .setup.user.state('states:start')
+                    .input('2')
+                    .check.interaction({
+                        state: 'states:randomLocation',
+                        reply: 'Random locations coming soon!'
+                        
                     })
                     .run();
             });
         });
 
         describe("when the user asks to exit", function() {
-            it("should say thank you and end the session", function() {
+            it("should say good bye and end the session", function() {
                 return tester
                     .setup.user.state('states:start')
-                    .input('2')
+                    .input('3')
                     .check.interaction({
                         state: 'states:end',
-                        reply: 'Thanks, cheers!'
+                        reply: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za'
                     })
                     .check.reply.ends_session()
                     .run();
