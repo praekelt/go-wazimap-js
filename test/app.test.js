@@ -33,8 +33,7 @@ describe("app", function() {
                             '1. Enter a location to query',
                             '2. Query a random location',
                             '3. Exit'
-                        ]
-                        .join('\n')
+                        ].join('\n')
                     })
                     .run();
             });
@@ -47,15 +46,14 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:location',
-                        reply: 'Please enter a location on National, Provincial or Ward level to query:'
-                        
+                        reply: 'Please enter a location on National, Provincial or Ward level to query:'                       
                     })
                     .run();
             });
         });
 
-     describe("when the user asks to query a location", function() {
-            it("should ask them to enter a location", function() {
+     describe("when the user asks to query a random location", function() {
+            it("should return a random location with query data", function() {
                 return tester
                     .setup.user.state('states:start')
                     .input('2')
