@@ -31,10 +31,9 @@ describe("app", function() {
                         reply: [
                             'Welcome to Wazimap! What would you like to do?',
                             '1. Enter a location to query',
-                            '2. Query a random location',
-                            '3. Exit'
-                        ]
-                        .join('\n')
+                            '2. Query a random location'
+			    '3. Exit'
+                        ].join('\n')
                     })
                     .run();
             });
@@ -47,8 +46,8 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:location',
-                        reply: 'Please enter a location on National, Provincial or Ward level to query:'
-                        
+                        reply: 'Please enter a location on National, Provincial or Ward level to query:',
+                        .join('\n')
                     })
                     .run();
             });
@@ -58,11 +57,11 @@ describe("app", function() {
             it("should ask them to enter a location", function() {
                 return tester
                     .setup.user.state('states:start')
-                    .input('2')
+                    .input('1')
                     .check.interaction({
-                        state: 'states:randomLocation',
-                        reply: 'Random locations coming soon!'
-                        
+                        state: 'states:location',
+                        reply: 'Please enter a location on National, Provincial or Ward level to query:',
+                        .join('\n')
                     })
                     .run();
             });
