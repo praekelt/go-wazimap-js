@@ -5,9 +5,15 @@ go.app = function() {
     var ChoiceState = vumigo.states.ChoiceState;
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
+    var JsonApi = vumigo.http.api.JsonApi;
+    var _ = require("lodash");
 
     var GoApp = App.extend(function(self) {
         App.call(self, 'states:start');
+
+        self.init = function() {            
+        self.http = new JsonApi(self.im);       
+       };
 
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
@@ -28,7 +34,18 @@ go.app = function() {
             return new FreeText(name, {
                 question: 'Please enter a location on National, Provincial or Ward level to query:',
                 next: function(content) {
-                    return 'states:end';
+                    return self 
+                    .http.get('http://wazimap.co.za/place-search/json/', {
+                        params: {q : content}
+                    })
+                    .then (function(response) {  
+                        return {
+                            name: 'states:results',
+                            creator_opts: {
+                                locations: response.results
+                            } 
+                        }
+                    }) 
                 }   
             });
         });
