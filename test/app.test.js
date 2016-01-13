@@ -52,6 +52,21 @@ describe("app", function() {
             });
         });
 
+        describe("when the user submits a location", function() {
+            it("should return a list of location results", function() {
+                return tester
+                    .setup.user.state('states:location')
+                    .input('Claremont')
+                    .check.interaction({
+                        state: 'states:results',
+                        reply: 'Please select the location you would like to query:'                       
+                    })
+                    .run();
+            });
+        });
+
+
+
      describe("when the user asks to query a random location", function() {
             it("should return a random location with query data", function() {
                 return tester
