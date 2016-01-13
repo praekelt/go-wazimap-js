@@ -49,6 +49,13 @@ go.app = function() {
                 }   
             });
         });
+
+        self.states.add('states:results', function(name, opts) {
+        	question: "Please select the location you would like to query:",
+        	 next: function(content) {
+                    return 'states:end';
+                } 
+        });
               
         self.states.add('states:randomLocation', function(name) {
             return new EndState(name, {
