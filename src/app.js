@@ -6,7 +6,7 @@ go.app = function() {
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
     var JsonApi = vumigo.http.api.JsonApi;
-    var _ = require("lodash");
+    //var _ = require("lodash");
 
     var GoApp = App.extend(function(self) {
         App.call(self, 'states:start');
@@ -44,18 +44,45 @@ go.app = function() {
                             creator_opts: {
                                 locations: response.results
                             } 
-                        }
-                    }) 
+                        };
+                    }); 
                 }   
             });
         });
 
+
         self.states.add('states:results', function(name, opts) {
-        	question: "Please select the location you would like to query:",
-        	 next: function(content) {
-                    return 'states:end';
-                } 
-        });
+			var loc = opts.locations
+				.map(function(d) {
+					return new Choice(d.full_name);
+				});
+				
+			return new MenuChoiceState(name, {
+				question: 'Please select the location you would like to query:',
+				choices: loc,
+				characters_per_page: 160,
+				options_per_page : 3,
+				next: function(choice) {
+					return choice.value;
+					}	
+				});
+			});
+
+
+
+			//return new ChoiceState(name, {
+			//question: 'Please select the location you would like to query:',
+			//_.foreach(locations[1], function(value) {
+			//choices: [ 
+			//new Choice(console.log(value)) ],
+			//next: function(choice) {
+		//		return choice.value;
+		//		}
+			//next: function(content) {
+                  //  return 'states:end'
+          //    });
+           //}); 
+        //});
               
         self.states.add('states:randomLocation', function(name) {
             return new EndState(name, {
