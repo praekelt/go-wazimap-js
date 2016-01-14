@@ -62,17 +62,13 @@ describe("app", function() {
                         state: 'states:results',
                         reply: [
                             'Please select the location you would like to query:',
-                            'Ward 58 (19100058), City of Cape Town, Western Cape',
-                            'Ward 7 (52502007), Newcastle, KwaZulu-Natal',
-                            'Ward 82 (79800082), City of Johannesburg, Gauteng',
-                            'Ward 55 (79900055), City of Tshwane, Gauteng' 
+                            '1. Ward 58 (19100058), City of Cape Town, Western Cape',
+                            '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal' 
                         ].join('\n')
                     })
                     .run();
             });
         });
-
-
 
      describe("when the user asks to query a random location", function() {
             it("should return a random location with query data", function() {

@@ -3,19 +3,14 @@ module.exports = function() {
         "request": {
             "method": "GET",
             "url": "http://wazimap.co.za/place-search/json/",
-            "data": {
+            "params": {
                 "q": "Claremont"
             }
         },
         "response": {
             "code": 200,
             "data": {
-                "form": {},
-                "files": {},
-                "url": "http://wazimap.co.za/place-search/json/",
-                "args": {},
-                "json" : {
-                    "results": [
+                "results": [
             {
                 "geo_code": "19100058", 
                 "full_name": "Ward 58 (19100058), City of Cape Town, Western Cape", 
@@ -39,9 +34,7 @@ module.exports = function() {
                 "full_name": "Ward 55 (79900055), City of Tshwane, Gauteng", 
                 "full_geoid": "ward-79900055", 
                 "geo_level": "ward"
-            }]
-                }
-            }
+            }]}
         }
     }];
 };
