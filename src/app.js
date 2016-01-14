@@ -56,7 +56,7 @@ go.app = function() {
 				.map(function(d) {
 					return new Choice(d.full_name);
 				});
-				
+
 			return new MenuChoiceState(name, {
 				question: 'Please select the location you would like to query:',
 				choices: loc,
@@ -68,21 +68,6 @@ go.app = function() {
 				});
 			});
 
-
-
-			//return new ChoiceState(name, {
-			//question: 'Please select the location you would like to query:',
-			//_.foreach(locations[1], function(value) {
-			//choices: [ 
-			//new Choice(console.log(value)) ],
-			//next: function(choice) {
-		//		return choice.value;
-		//		}
-			//next: function(content) {
-                  //  return 'states:end'
-          //    });
-           //}); 
-        //});
               
         self.states.add('states:randomLocation', function(name) {
             return new EndState(name, {

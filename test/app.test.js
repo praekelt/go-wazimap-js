@@ -3,6 +3,7 @@ var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 
 
+
 describe("app", function() {
     describe("GoApp", function() {
         var app;
