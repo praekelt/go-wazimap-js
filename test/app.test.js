@@ -70,6 +70,19 @@ describe("app", function() {
             });
         });
 
+        describe("when the user selects a location to query", function() {
+            it("should direct to the end state", function() {
+                return tester
+                    .setup.user.state('states:location')
+                    .inputs('Claremont', '1')
+                    .check.interaction({
+                        state: 'states:end',
+                        reply: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za'
+                    })
+                    .run();
+            });
+        });
+
      describe("when the user asks to query a random location", function() {
             it("should return a random location with query data", function() {
                 return tester
