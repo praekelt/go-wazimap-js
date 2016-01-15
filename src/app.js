@@ -12,9 +12,9 @@ go.app = function() {
         App.call(self, 'states:start');
 
         self.init = function() {            
-        self.http = new JsonApi(self.im);       
-       };
-
+            self.http = new JsonApi(self.im);       
+        };
+        
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: 'Welcome to Wazimap! What would you like to do?',
