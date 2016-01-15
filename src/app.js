@@ -67,7 +67,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:data', function(name, opts) {
+        self.states.add('states:data', function(name) {
             return new ChoiceState(name, {
                 question: 'Please select which information you would like to query:',
 				choices: [
@@ -80,6 +80,10 @@ go.app = function() {
 				}                
 			});
 		});
+
+		self.states.add('states:elections', function(name, opts) {
+			
+		})
       
         self.states.add('states:randomLocation', function(name) {
             return new EndState(name, {
