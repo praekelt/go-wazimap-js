@@ -69,10 +69,24 @@ go.app = function() {
                 characters_per_page: 160,
                 options_per_page : 3,
                 next: function(choice) {
-                    return 'states:end';
+                    return 'states:data';
                 }   
             });
         });
+
+        self.states.add('states:data', function(name, opts) {
+            return new ChoiceState(name, {
+                question: 'Please select which information you would like to query:',
+				choices: [
+					new Choice('states:end', 'Elections'),
+					new Choice ('states:demographics', 'Demographics'),
+					new Choice('states:households', 'Households')],
+
+				next: function(choice) {
+					return choice.value;
+				}                
+			});
+		});
       
         self.states.add('states:randomLocation', function(name) {
             return new EndState(name, {

@@ -71,10 +71,28 @@ describe("app", function() {
         });
 
         describe("when the user selects a location to query", function() {
-            it("should direct to the end state", function() {
+            it("should return a list of data to query", function() {
                 return tester
                     .setup.user.state('states:location')
                     .inputs('Claremont', '1')
+                    .check.interaction({
+                        state: 'states:data',
+                        reply: [
+                            'Please select which information you would like to query:',
+                            '1. Elections',
+                            '2. Demographics',
+                            '3. Households'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user selects a type of data to query", function() {
+            it("should return the end-state", function() {
+                return tester
+                    .setup.user.state('states:data')
+                    .input('1')
                     .check.interaction({
                         state: 'states:end',
                         reply: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za'
