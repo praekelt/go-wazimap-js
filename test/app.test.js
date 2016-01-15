@@ -3,6 +3,7 @@ var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 
 
+
 describe("app", function() {
     describe("GoApp", function() {
         var app;
@@ -47,6 +48,23 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:location',
                         reply: 'Please enter a location on National, Provincial or Ward level to query:'                       
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user submits a location", function() {
+            it("should return a list of location results", function() {
+                return tester
+                    .setup.user.state('states:location')
+                    .input('Claremont')
+                    .check.interaction({
+                        state: 'states:results',
+                        reply: [
+                            'Please select the location you would like to query:',
+                            '1. Ward 58 (19100058), City of Cape Town, Western Cape',
+                            '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal' 
+                        ].join('\n')
                     })
                     .run();
             });
