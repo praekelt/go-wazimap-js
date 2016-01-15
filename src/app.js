@@ -82,8 +82,16 @@ go.app = function() {
 		});
 
 		self.states.add('states:elections', function(name, opts) {
-			
-		})
+
+		});
+
+		self.states.add('states:demographics', function(name, opts) {
+
+		});
+
+		self.states.add('states:households', function(name, opts) {
+
+		});
       
         self.states.add('states:randomLocation', function(name) {
             return new EndState(name, {
