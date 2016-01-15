@@ -88,6 +88,10 @@ go.app = function() {
 			});
 		});
 
+		//NOTE FOR SELF: Need to feed d.geoid into 2ns url for data
+		//probably dont want to repeat in every state selected? So can I somehow call that in the above state.
+		//
+
 		self.states.add('states:elections', function(name, opts) {
 
 		});
