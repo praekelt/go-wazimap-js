@@ -69,40 +69,47 @@ go.app = function() {
                 characters_per_page: 160,
                 options_per_page : 3,
                 next: function(choice) {
-                    return 'states:data';
+                    return { 
+                        name: 'states:select-section',
+                        creator_opts : {
+                            full_geoid : choice.value,
+                            full_name : choice.label
+                        }
+                    };
                 }   
             });
         });
 
-        self.states.add('states:data', function(name) {
-            return new ChoiceState(name, {
-                question: 'Please select which information you would like to query:',
-				choices: [
-					new Choice('states:end', 'Elections'),
-					new Choice ('states:demographics', 'Demographics'),
-					new Choice('states:households', 'Households')],
+        self.states.add('states:select-section', function(name, opts) {
+            return self
+                .http.get('http://wazimap.co.za/profiles/' + opts.full_geoid + '.json')
+                .then(function(resp) {
+                    return new ChoiceState(name, {
+                        question: 'Please select which information you would like to query:',
+                        choices: [
+                            new Choice('elections', 'Elections'),
+                            new Choice ('demographics', 'Demographics'),
+                            new Choice('households', 'Households')
+                        ],
+                        next: function(choice) {
+                            return {
+                                name: 'states:display-data',
+                                creator_opts : {
+                                    choice_data : response.data[choice.value],
+                                    location_name : opts.full_name
+                                }
+                            };
+                        }
+                    });
+                });
+        });
 
-				next: function(choice) {
-					return choice.value;
-				}                
-			});
-		});
-
-		//NOTE FOR SELF: Need to feed d.geoid into 2ns url for data
-		//probably dont want to repeat in every state selected? So can I somehow call that in the above state.
-		//
-
-		self.states.add('states:elections', function(name, opts) {
-
-		});
-
-		self.states.add('states:demographics', function(name, opts) {
-
-		});
-
-		self.states.add('states:households', function(name, opts) {
-
-		});
+        self.states.add('states:display-data', function(name, opts) {
+            return {
+                text: 'You are receiving data on ' + opts.location_name + 'for ' + opts.choice_data,
+                next : 'states:end'
+            };            
+        });
       
         self.states.add('states:randomLocation', function(name) {
             return new EndState(name, {

@@ -65,7 +65,7 @@ go.app = function() {
                     return { 
                         name: 'states:select-section',
                         creator_opts : {
-                            full_geoid : choice.value
+                            full_geoid : choice.value,
                             full_name : choice.label
                         }
                     };
@@ -75,7 +75,7 @@ go.app = function() {
 
         self.states.add('states:select-section', function(name, opts) {
             return self
-                .http.get('http://wazimap.co.za/profiles/' + opts.full_geoid + '.json');
+                .http.get('http://wazimap.co.za/profiles/' + opts.full_geoid + '.json')
                 .then(function(resp) {
                     return new ChoiceState(name, {
                         question: 'Please select which information you would like to query:',
@@ -88,10 +88,10 @@ go.app = function() {
                             return {
                                 name: 'states:display-data',
                                 creator_opts : {
-                                    choice_data : response.data[choice.value]
+                                    choice_data : response.data[choice.value],
                                     location_name : opts.full_name
                                 }
-                            }
+                            };
                         }
                     });
                 });
@@ -101,7 +101,7 @@ go.app = function() {
             return {
                 text: 'You are receiving data on ' + opts.location_name + 'for ' + opts.choice_data,
                 next : 'states:end'
-            }            
+            };            
         });
       
         self.states.add('states:randomLocation', function(name) {
