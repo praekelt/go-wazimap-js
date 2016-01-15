@@ -18,7 +18,7 @@ go.app = function() {
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
                 question: 'Welcome to Wazimap! What would you like to do?',
-		
+        
                 choices: [
                     new Choice('states:location', 'Enter a location to query'),
                     new Choice ('states:randomLocation', 'Query a random location'),
@@ -52,20 +52,20 @@ go.app = function() {
 
 
         self.states.add('states:results', function(name, opts) {
-			var location_choices = _.map(opts.locations.slice(0, 2), function(d) {
+            var location_choices = _.map(opts.locations.slice(0, 2), function(d) {
                 return new Choice(d.full_geoid, d.full_name);
-			});
+            });
 
-			return new ChoiceState(name, {
-				question: 'Please select the location you would like to query:',
-				choices: location_choices,
-				characters_per_page: 160,
-				options_per_page : 3,
-				next: function(choice) {
-					return choice.value;
-					}	
-				});
-			});
+            return new ChoiceState(name, {
+                question: 'Please select the location you would like to query:',
+                choices: location_choices,
+                characters_per_page: 160,
+                options_per_page : 3,
+                next: function(choice) {
+                    return choice.value;
+                    }   
+                });
+            });
       
         self.states.add('states:randomLocation', function(name) {
             return new EndState(name, {
