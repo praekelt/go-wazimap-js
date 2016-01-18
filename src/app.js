@@ -73,35 +73,45 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:select-section', function(name, opts) {
+
+        self.states.add('states:retrieve-location', function(name, opts) {
             return self
                 .http.get('http://wazimap.co.za/profiles/' + opts.full_geoid + '.json')
                 .then(function(resp) {
-                    return new ChoiceState(name, {
-                        question: 'Please select which information you would like to query:',
-                        choices: [
-                            new Choice('elections', 'Elections'),
-                            new Choice ('demographics', 'Demographics'),
-                            new Choice('households', 'Households')
-                        ],
-                        next: function(choice) {
-                            return {
-                                name: 'states:display-data',
-                                creator_opts : {
-                                    choice_data : response.data[choice.value],
-                                    location_name : opts.full_name
-                                }
-                            };
-                        }
+                    opts.data = resp.data;
+                    return self.states.create({
+                        name: 'states:select-section',
+                        creator_opts: opts
                     });
                 });
         });
 
+        self.states.add('states:select-section', function(name, opts) {
+            return new ChoiceState(name, {
+                question: 'Please select which information you would like to query:',
+                choices: [
+                    new Choice('elections', 'Elections'),
+                    new Choice ('demographics', 'Demographics'),
+                    new Choice('households', 'Households')
+                        ],
+                    next: function(choice) {
+                        return {
+                            name: 'states:display-data',
+                            creator_opts : {
+                            choice_data : opts[choice.value],
+                            location_name : opts.full_name
+                            }
+                        };
+                    }
+            });
+        });
+
+
         self.states.add('states:display-data', function(name, opts) {
-            return {
-                text: 'You are receiving data on ' + opts.location_name + 'for ' + opts.choice_data,
-                next : 'states:end'
-            };            
+            return new EndState (name, {
+                text: 'You are receiving data on ' + opts.location_name, 
+                next : 'states:start'
+            });            
         });
       
         self.states.add('states:randomLocation', function(name) {

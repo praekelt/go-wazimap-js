@@ -91,11 +91,11 @@ describe("app", function() {
         describe("when the user selects a type of data to query", function() {
             it("should display the data", function() {
                 return tester
-                    .setup.user.state('states:select-section')
-                    .input('1')
+                    .setup.user.state('states:location')
+                    .inputs('Claremont', '1', '1')
                     .check.interaction({
                         state: 'states:display-data',
-                        reply: 'You are receiving data on Claremont for Elections'
+                        reply: 'You are receiving data on Ward 58 (19100058), City of Cape Town, Western Cape'
                     })
                     .run();
             });
