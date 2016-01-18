@@ -123,3 +123,6 @@ go.app = function() {
         GoApp: GoApp
     };
 }();
+
+//NEED TO UPDATE FIXTURES
+//NEED TO UPDATE TESTS

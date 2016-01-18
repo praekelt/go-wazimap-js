@@ -76,7 +76,7 @@ describe("app", function() {
                     .setup.user.state('states:location')
                     .inputs('Claremont', '1')
                     .check.interaction({
-                        state: 'states:data',
+                        state: 'states:select-section',
                         reply: [
                             'Please select which information you would like to query:',
                             '1. Elections',
@@ -89,13 +89,13 @@ describe("app", function() {
         });
 
         describe("when the user selects a type of data to query", function() {
-            it("should return the end-state", function() {
+            it("should display the data", function() {
                 return tester
-                    .setup.user.state('states:data')
+                    .setup.user.state('states:select-section')
                     .input('1')
                     .check.interaction({
-                        state: 'states:end',
-                        reply: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za'
+                        state: 'states:display-data',
+                        reply: 'You are receiving data on Claremont for Elections'
                     })
                     .run();
             });
