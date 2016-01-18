@@ -50,7 +50,6 @@ go.app = function() {
             });
         });
 
-
         self.states.add('states:results', function(name, opts) {
             var location_choices = _.map(opts.locations.slice(0, 2), function(d) {
                 return new Choice(d.full_geoid, d.full_name);
@@ -72,7 +71,6 @@ go.app = function() {
                 }   
             });
         });
-
 
         self.states.add('states:retrieve-location', function(name, opts) {
             return self
@@ -106,7 +104,6 @@ go.app = function() {
             });
         });
 
-
         self.states.add('states:display-data', function(name, opts) {
             return new EndState (name, {
                 text: 'You are receiving data on ' + opts.location_name, 
@@ -120,7 +117,6 @@ go.app = function() {
             });
         });
 
-       
         self.states.add('states:end', function(name) {
             return new EndState(name, {
                 text: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za',
@@ -133,6 +129,3 @@ go.app = function() {
         GoApp: GoApp
     };
 }();
-
-//NEED TO UPDATE FIXTURES
-//NEED TO UPDATE TESTS
