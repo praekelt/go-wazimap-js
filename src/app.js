@@ -79,7 +79,9 @@ go.app = function() {
                     opts.data = resp.data;
                     return self.states.create({
                         name: 'states:select-section',
-                        creator_opts: opts
+                        creator_opts: {
+                            area_data: opts.data
+                        }
                     });
                 });
         });
@@ -96,7 +98,7 @@ go.app = function() {
                         return {
                             name: 'states:display-data',
                             creator_opts : {
-                            choice_data : opts[choice.value],
+                            choice_data : opts.area_data[choice.value],
                             location_name : opts.full_name
                             }
                         };
@@ -104,13 +106,13 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:display-data', function(name, opts) {
+             self.states.add('states:display-data', function(name, opts) {
             return new EndState (name, {
                 text: 'You are receiving data on ' + opts.location_name, 
                 next : 'states:start'
             });            
         });
-      
+
         self.states.add('states:randomLocation', function(name) {
             return new EndState(name, {
                 text: 'Random locations coming soon!'

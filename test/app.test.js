@@ -95,7 +95,7 @@ describe("app", function() {
                     .inputs('Claremont', '1', '1')
                     .check.interaction({
                         state: 'states:display-data',
-                        reply: 'You are receiving data on Ward 58 (19100058), City of Cape Town, Western Cape'
+                       reply: 'You are receiving data on Ward 58 (19100058), City of Cape Town, Western Cape'
                     })
                     .run();
             });
