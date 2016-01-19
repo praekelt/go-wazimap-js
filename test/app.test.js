@@ -78,10 +78,15 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:select-section',
                         reply: [
-                            'Please select which information you would like to query:',
+                            'I would like to query:',
                             '1. Elections',
                             '2. Demographics',
-                            '3. Households'
+                            '3. Households',
+                            '4. Service Delivery',
+                            '5. Economics',
+                            '6. Education',
+                            '7. Children',
+                            '8. Child-headed Households'
                         ].join('\n')
                     })
                     .run();
@@ -122,10 +127,15 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:select-section',
                         reply: [
-                            'Please select which information you would like to query:',
+                            'I would like to query:',
                             '1. Elections',
                             '2. Demographics',
-                            '3. Households'
+                            '3. Households',
+                            '4. Service Delivery',
+                            '5. Economics',
+                            '6. Education',
+                            '7. Children',
+                            '8. Child-headed Households'
                         ].join('\n')                     
                     })
                     .run();

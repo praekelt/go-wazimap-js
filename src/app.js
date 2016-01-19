@@ -84,11 +84,16 @@ go.app = function() {
 
         self.states.add('states:select-section', function(name, opts) {
             return new ChoiceState(name, {
-                question: 'Please select which information you would like to query:',
+                question: 'I would like to query:',
                 choices: [
                     new Choice('elections', 'Elections'),
                     new Choice ('demographics', 'Demographics'),
-                    new Choice('households', 'Households')
+                    new Choice('households', 'Households'),
+                    new Choice('service_delivery', 'Service Delivery'),
+                    new Choice('economics', 'Economics'),
+                    new Choice('education', 'Education'),
+                    new Choice('children', 'Children'),
+                    new Choice('child_households', 'Child-headed Households')
                         ],
                     next: function(choice) {
                         return {
@@ -104,17 +109,17 @@ go.app = function() {
         });
 
         self.states.add('states:display-data', function(name, opts) {
-            // var choice_data = _.map(opts.choice_data, function(d) {
-            //     return new Choice(); //in here we will access the relevent choice data
-            // });
-            //console.log(opts.choice_data);
+            //var choice_data = _.map(opts.choice_data, function(d) {
+            //return new Choice(d); 
+            //});
+            //console.log(choice_data);
             return new ChoiceState(name, {
                 question: [
                 //data from json file here
                 // '++++++++++++++++++++',
                 opts.location_name,
                 opts.choice_name + ':'
-                // choice_data,
+                //choice_data
                 // '++++++++++++++++++++'
                 ].join('\n'),
 
