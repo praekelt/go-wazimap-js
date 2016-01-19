@@ -62,7 +62,7 @@ go.app = function() {
                 options_per_page : 3,
                 next: function(choice) {
                     return { 
-                        name: 'states:select-section',
+                        name: 'states:retrieve-location',
                         creator_opts : {
                             full_geoid : choice.value,
                             full_name : choice.label
@@ -75,14 +75,10 @@ go.app = function() {
         self.states.add('states:retrieve-location', function(name, opts) {
             return self
                 .http.get('http://wazimap.co.za/profiles/' + opts.full_geoid + '.json')
-                .then(function(resp) {
-                    opts.data = resp.data;
-                    return self.states.create({
-                        name: 'states:select-section',
-                        creator_opts: {
-                            area_data: opts.data
-                        }
-                    });
+                .then(function(response) {
+                    opts.data = response.data;
+                    return  self.states.create(
+                        'states:select-section', opts);
                 });
         });
 
@@ -98,7 +94,8 @@ go.app = function() {
                         return {
                             name: 'states:display-data',
                             creator_opts : {
-                            choice_data : opts.area_data[choice.value],
+                            choice_name : choice.label,
+                            choice_data : opts.data[choice.value],
                             location_name : opts.full_name
                             }
                         };
@@ -106,11 +103,49 @@ go.app = function() {
             });
         });
 
-             self.states.add('states:display-data', function(name, opts) {
-            return new EndState (name, {
-                text: 'You are receiving data on ' + opts.location_name, 
-                next : 'states:start'
-            });            
+        self.states.add('states:display-data', function(name, opts) {
+            // var choice_data = _.map(opts.choice_data, function(d) {
+            //     return new Choice(); //in here we will access the relevent choice data
+            // });
+            //console.log(opts.choice_data);
+            return new ChoiceState(name, {
+                question: [
+                //data from json file here
+                // '++++++++++++++++++++',
+                opts.location_name,
+                opts.choice_name + ':'
+                // choice_data,
+                // '++++++++++++++++++++'
+                ].join('\n'),
+
+                choices: [
+                    new Choice('states:sms', 'SMS details'),
+                    new Choice('states:select-section', 'Query another section'),
+                    new Choice('states:location', 'Change location to query'),
+                    new Choice('states:start', 'Main Menu'),
+                    new Choice('states:end', 'Exit')],
+
+                characters_per_page: 160,
+
+                next: function(choice) {
+                    if (choice.value == 'states:start' || choice.value == 'states:end') {
+                        return choice.value;
+                    } else {
+                        return {
+                            name: choice.value,
+                            creator_opts: {
+                                choice_data : opts.choice_data
+                            }
+                        };
+                    }
+                }
+            });
+        });
+
+        self.states.add('states:sms', function(name, opts) {
+            return new EndState(name, {
+                text: 'Sms coming soon!'
+            });
         });
 
         self.states.add('states:randomLocation', function(name) {
