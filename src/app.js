@@ -100,7 +100,7 @@ go.app = function() {
                         name: 'states:display-data',
                         creator_opts : {
                             section_name : choice.label,
-                            choice_data : choice.value,
+                            section_id : choice.value,
                             opts_data : opts.data,
                             location_name : opts.full_name
                         }
@@ -110,7 +110,7 @@ go.app = function() {
         });
 
         self.states.add('states:display-data', function(name, opts) {
-            var section_data = opts.opts_data[opts.choice_data]; 
+            var section_data = opts.opts_data[opts.section_id]; 
             var sub_section_data = _.map(section_data, function(d) {
                 return ('Registered Voters: ' + d.registered_voters.values.this);
             });
@@ -133,7 +133,7 @@ go.app = function() {
                         return {
                             name: choice.value,
                             creator_opts: {
-                                choice_data : opts.choice_data,
+                                section_id : opts.section_id,
                                 section_data : section_data
                             }
                         };
