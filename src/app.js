@@ -87,7 +87,7 @@ go.app = function() {
                 question: 'I would like to query:',
                 choices: [
                     new Choice('elections', 'Elections'),
-                    new Choice ('demographics', 'Demographics'),
+                    new Choice('demographics', 'Demographics'),
                     new Choice('households', 'Households'),
                     new Choice('service_delivery', 'Service Delivery'),
                     new Choice('economics', 'Economics'),
@@ -95,42 +95,36 @@ go.app = function() {
                     new Choice('children', 'Children'),
                     new Choice('child_households', 'Child-headed Households')
                         ],
-                    next: function(choice) {
-                        return {
-                            name: 'states:display-data',
-                            creator_opts : {
-                            choice_name : choice.label,
-                            choice_data : opts.data[choice.value],
+                next: function(choice) {
+                    return {
+                        name: 'states:display-data',
+                        creator_opts : {
+                            section_name : choice.label,
+                            choice_data : choice.value,
+                            opts_data : opts.data,
                             location_name : opts.full_name
-                            }
-                        };
-                    }
+                        }
+                    };
+                }
             });
         });
 
         self.states.add('states:display-data', function(name, opts) {
-            //var choice_data = _.map(opts.choice_data, function(d) {
-            //return new Choice(d); 
-            //});
-            //console.log(choice_data);
+            var section_data = opts.opts_data[opts.choice_data]; 
+            var sub_section_data = _.map(section_data, function(d) {
+                return ('Registered Voters: ' + d.registered_voters.values.this);
+            });
             return new ChoiceState(name, {
                 question: [
-                //data from json file here
-                // '++++++++++++++++++++',
                 opts.location_name,
-                opts.choice_name + ':'
-                //choice_data
-                // '++++++++++++++++++++'
+                opts.section_name + ':',
+                sub_section_data.slice(0,1)
                 ].join('\n'),
 
                 choices: [
                     new Choice('states:sms', 'SMS details'),
                     new Choice('states:select-section', 'Query another section'),
-                    new Choice('states:location', 'Change location to query'),
-                    new Choice('states:start', 'Main Menu'),
                     new Choice('states:end', 'Exit')],
-
-                characters_per_page: 160,
 
                 next: function(choice) {
                     if (choice.value == 'states:start' || choice.value == 'states:end') {
@@ -139,7 +133,8 @@ go.app = function() {
                         return {
                             name: choice.value,
                             creator_opts: {
-                                choice_data : opts.choice_data
+                                choice_data : opts.choice_data,
+                                section_data : section_data
                             }
                         };
                     }

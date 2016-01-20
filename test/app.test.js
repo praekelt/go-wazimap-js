@@ -100,20 +100,14 @@ describe("app", function() {
                     .inputs('Claremont', '1', '1')
                     .check.interaction({
                         state: 'states:display-data',
-                       reply: [
-                       // '++++++++++++++++++++',
-                       'Ward 58 (19100058), City of Cape Town, Western Cape',
-                       'Elections:',
-                       // 'provincial_2014',
-                       // 'Number of registered voters: 19234',
-                       // 'DA: 89.54%',
-                       // '++++++++++++++++++++',
-                       '1. SMS details',
-                       '2. Query another section',
-                       '3. Change location to query',
-                       '4. Main Menu',
-                       '5. Exit'
-                       ].join('\n')
+                        reply: [
+                            'Ward 58 (19100058), City of Cape Town, Western Cape',
+                            'Elections:',
+                            'Registered Voters: 19234',
+                            '1. SMS details',
+                            '2. Query another section',
+                            '3. Exit'
+                        ].join('\n')
                     })
                     .run();
             });
@@ -122,8 +116,8 @@ describe("app", function() {
         describe("when the user chooses to query another section for the same location", function() {
             it("should return back to the select-section state ", function() {
                 return tester
-                    .setup.user.state('states:display-data')
-                    .input('2')
+                    .setup.user.state('states:location')
+                    .inputs('Claremont', '1', '1', '2')
                     .check.interaction({
                         state: 'states:select-section',
                         reply: [
@@ -142,42 +136,11 @@ describe("app", function() {
             });
         });
 
-        describe("when the user chooses to query another location", function() {
-            it("should return back to the location state ", function() {
-                return tester
-                    .setup.user.state('states:display-data')
-                    .input('3')
-                    .check.interaction({
-                        state: 'states:location',
-                        reply: 'Please enter a location on National, Provincial or Ward level to query:'                       
-                    })                     
-                    .run();
-            });
-        });
-
-        describe("when the user selects to return to the main menu", function() {
-            it("should return to the main menu and reset data", function() {
-                return tester
-                    .setup.user.state('states:display-data')
-                    .input('4')
-                    .check.interaction({
-                        state: 'states:start',
-                        reply: [
-                            'Welcome to Wazimap! What would you like to do?',
-                            '1. Enter a location to query',
-                            '2. Query a random location',
-                            '3. Exit'
-                        ].join('\n')                      
-                    })
-                    .run();
-            });
-        });
-
         describe("when the user chooses to exit", function() {
             it("should say good bye and end the session", function() {
                 return tester
-                    .setup.user.state('states:display-data')
-                    .input('5')
+                    .setup.user.state('states:location')
+                    .inputs('Claremont', '1', '1', '3')
                     .check.interaction({
                         state: 'states:end',
                         reply: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za'
