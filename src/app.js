@@ -112,10 +112,42 @@ go.app = function() {
         self.states.add('states:display-data', function(name, opts) {
             var section_data = opts.opts_data[opts.section_id]; 
             var return_text = get_election_data(section_data);
-            // var sub_section_data = _.map(section_data, function(d) {
-            //     return ('Registered Voters: ' + d);
-            // });
             console.log(return_text);
+
+            switch (opts.section_id) { 
+                case "elections" : 
+                    return_text = get_election_data(section_data);
+                    break;
+
+                case "demographics" :
+                    return_text = get_demographics_data(section_data);
+                    break;
+
+                case "households" : 
+                    return_text = get_households_data(section_data);
+                    break; 
+
+                case "service_delivery" :
+                    return_text = get_service_delivery_data(section_data); 
+                    break;
+
+                case "economics" : 
+                    return_text = get_economics_data(section_data);
+                    break;
+
+                case "education" :
+                    return_text = get_education_data(section_data);
+                    break; 
+
+                case "children" : 
+                    return_text = get_children_data(section_data);
+                    break; 
+
+                case "child_households" : 
+                    return_text = get_child_headed_households_data(section_data);
+                    break; 
+            }
+
             return new ChoiceState(name, {
                 question: [
                 opts.location_name,
@@ -185,7 +217,7 @@ get_households_data = function(section_data) {
     return sub_section_data;
 };
 
-get_service_delivery = function(section_data) {
+get_service_delivery_data = function(section_data) {
     var sub_section_data = _.map(section_data, function(d) {
         return (d.name + ": " + d.electricity_access_distribution.name + " = " + d.electricity_access_distribution.values.this + "%");
     });
@@ -213,7 +245,7 @@ get_children_data = function(section_data) {
     return sub_section_data;
 };
 
-get_child_headed_households = function(section_data) {
+get_child_headed_households_data = function(section_data) {
     var sub_section_data = _.map(section_data, function(d) {
         return (d.name);
     });
