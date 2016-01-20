@@ -187,18 +187,35 @@ get_households_data = function(section_data) {
 
 get_service_delivery = function(section_data) {
     var sub_section_data = _.map(section_data, function(d) {
-        return(d.name + ": " + d.electricity_access_distribution.name + " = " + d.electricity_access_distribution.values.this + "%");
+        return (d.name + ": " + d.electricity_access_distribution.name + " = " + d.electricity_access_distribution.values.this + "%");
     });
     return sub_section_data;
 };
 
 get_economics_data = function(section_data) {
-    
+    var sub_section_data = _.map(section_data, function(d) {
+        return (d.name); 
+    });
+    return sub_section_data;
 };
 
 get_education_data = function(section_data) {
     var sub_section_data = _.map(section_data, function(d) {
         return (d.name + ": " + d.percent_fet_or_higher.name + " : " + d.percent_fet_or_higher.values.this + "%");
+    });
+    return sub_section_data;
+};
+
+get_children_data = function(section_data) {
+    var sub_section_data = _.map(section_data, function(d) {
+        return (d.name + ": " + d.parental_survival_distribution.name + " = " + d.parental_survival_distribution.values.this + "%" );
+    });
+    return sub_section_data;
+};
+
+get_child_headed_households = function(section_data) {
+    var sub_section_data = _.map(section_data, function(d) {
+        return (d.name);
     });
     return sub_section_data;
 };
