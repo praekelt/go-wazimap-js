@@ -111,14 +111,16 @@ go.app = function() {
 
         self.states.add('states:display-data', function(name, opts) {
             var section_data = opts.opts_data[opts.section_id]; 
-            var sub_section_data = _.map(section_data, function(d) {
-                return ('Registered Voters: ' + d.registered_voters.values.this);
-            });
+            var return_text = get_election_data(section_data);
+            // var sub_section_data = _.map(section_data, function(d) {
+            //     return ('Registered Voters: ' + d);
+            // });
+            console.log(return_text);
             return new ChoiceState(name, {
                 question: [
                 opts.location_name,
                 opts.section_name + ':',
-                sub_section_data.slice(0,1)
+                return_text
                 ].join('\n'),
 
                 choices: [
@@ -162,7 +164,48 @@ go.app = function() {
         });
     });
 
+get_election_data = function(section_data) {
+    var sub_section_data = _.map(section_data, function(d) {
+        return (d.name + ": " + d.registered_voters.name + " = " + d.registered_voters.values.this + " " + d.party_distribution.DA.name + ": " + d.party_distribution.DA.values. this + "% " + d.party_distribution.ANC.name + ": " + d.party_distribution.ANC.values.this + "%");
+    });
+    return sub_section_data;
+};
+
+get_demographics_data = function(section_data) {
+    var sub_section_data = _.map(section_data, function(d) {
+        return (d.name + ": " + d.citizenship_south_african.name + " = " + d.citizenship_south_african.values.this + "%, " + d.language_most_spoken.name + " = " + d.language_most_spoken.values.this + "%");
+    });
+    return sub_section_data;
+};
+
+get_households_data = function(section_data) {
+    var sub_section_data = _.map(section_data, function(d) {
+        return (d.name + ": " + d.informal.name + ' = ' + d.informal.values.this + "%");
+    });
+    return sub_section_data;
+};
+
+get_service_delivery = function(section_data) {
+    var sub_section_data = _.map(section_data, function(d) {
+        return(d.name + ": " + d.electricity_access_distribution.name + " = " + d.electricity_access_distribution.values.this + "%");
+    });
+    return sub_section_data;
+};
+
+get_economics_data = function(section_data) {
+    
+};
+
+get_education_data = function(section_data) {
+    var sub_section_data = _.map(section_data, function(d) {
+        return (d.name + ": " + d.percent_fet_or_higher.name + " : " + d.percent_fet_or_higher.values.this + "%");
+    });
+    return sub_section_data;
+};
+
     return {
         GoApp: GoApp
     };
+
+
 }();
