@@ -13,6 +13,7 @@ go.app = function() {
     var EndState = vumigo.states.EndState;
     var FreeText = vumigo.states.FreeText;
     var JsonApi = vumigo.http.api.JsonApi;
+
     var _ = require("lodash");
 
     var GoApp = App.extend(function(self) {
@@ -118,8 +119,7 @@ go.app = function() {
 
         self.states.add('states:display-data', function(name, opts) {
             var section_data = opts.opts_data[opts.section_id]; 
-            var return_text = get_election_data(section_data);
-            console.log(return_text);
+            var return_text;
 
             switch (opts.section_id) { 
                 case "elections" : 
@@ -159,7 +159,7 @@ go.app = function() {
                 question: [
                 opts.location_name,
                 opts.section_name + ':',
-                return_text
+                return_text.slice(0,1)
                 ].join('\n'),
 
                 choices: [
@@ -205,7 +205,7 @@ go.app = function() {
 
 get_election_data = function(section_data) {
     var sub_section_data = _.map(section_data, function(d) {
-        return (d.name + ": " + d.registered_voters.name + " = " + d.registered_voters.values.this + " " + d.party_distribution.DA.name + ": " + d.party_distribution.DA.values. this + "% " + d.party_distribution.ANC.name + ": " + d.party_distribution.ANC.values.this + "%");
+        return (d.name + ":"); // + d.registered_voters.name + " = " + d.registered_voters.values.this + " " + d.party_distribution.DA.name + ": " + d.party_distribution.DA.values. this + "% " + d.party_distribution.ANC.name + ": " + d.party_distribution.ANC.values.this + "%");
     });
     return sub_section_data;
 };

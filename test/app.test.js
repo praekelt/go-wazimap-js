@@ -103,7 +103,7 @@ describe("app", function() {
                         reply: [
                             'Ward 58 (19100058), City of Cape Town, Western Cape',
                             'Elections:',
-                            'Registered Voters: 19234',
+                            'Provincial 2014:',
                             '1. SMS details',
                             '2. Query another section',
                             '3. Exit'
