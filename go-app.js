@@ -124,16 +124,25 @@ go.app = function() {
     }
 
     sub_section.elections = function(data) {
-        return data.provincial_2014.name + ":\n" + "Registered voters = " + data.provincial_2014.registered_voters.values.this
-        ;
+        //I need to loop through the party distribution to return the top 3 parties
+        // votes_results = function(data) {
+        //     var first; 
+        //     var second; 
+        //     var third;
+        //     while (data.provincial_2014.party_distribution) {
+        //         for ()
+
+        //     }
+        // }
+        return data.provincial_2014.name + ":\n" + "Registered voters = " + data.provincial_2014.registered_voters.values.this + "\n" + data.provincial_2014.average_turnout.values.this + "% cast their vote";
     };
 
     sub_section.demographics = function(data) {
-        return;
+        return "RSA Citizens: " + data.citizenship_south_african.values.this + "%\n" + "Most spoken language: " + data.language_most_spoken.name;
     };
 
         sub_section.households = function(data) {
-        return;
+        return "Informal Dwellings: " + data.informal.values.this + "%\n" + "Homes owned and paid off: " + data.tenure_distribution["Owned and fully paid off"].values.this + "%" ;
     };
 
         sub_section.service_delivery = function(data) {

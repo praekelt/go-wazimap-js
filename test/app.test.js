@@ -100,8 +100,8 @@ describe("app", function() {
             });
         });
 
-        describe("when the user selects a type of data to query", function() {
-            it("should display the data", function() {
+        describe("when the user selects to query Elections", function() {
+            it("should display the Election data", function() {
                 return tester
                     .setup.user.state('states:location')
                     .inputs('Claremont', '1', '1')
@@ -112,6 +112,49 @@ describe("app", function() {
                             'Elections:',
                             'Provincial 2014:',
                             'Registered voters = 19234',
+                            '73.59% cast their vote',
+                            '1. SMS details',
+                            '2. Query another section',
+                            '3. Exit'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user selects to query Demographics", function() {
+            it("should display the Demographic data", function() {
+                return tester
+                    .setup.user.state('states:location')
+                    .inputs('Claremont', '1', '2')
+                    .check.interaction({
+                        state: 'states:display-data',
+                        reply: [
+                            'ward-19100058',
+                            'Demographics:',
+                            'RSA Citizens: 81.04%',
+                            'Most spoken language: English',
+                            '1. SMS details',
+                            '2. Query another section',
+                            '3. Exit'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user selects to query Households", function() {
+            it("should display the Household data", function() {
+                return tester
+                    .setup.user.state('states:location')
+                    .inputs('Claremont', '1', '3')
+                    .check.interaction({
+                        state: 'states:display-data',
+                        reply: [
+                            'ward-19100058',
+                            'Households:',
+                            'Informal Dwellings: 0.28%',
+                            'Homes owned and paid off: 29.66%',
                             '1. SMS details',
                             '2. Query another section',
                             '3. Exit'
