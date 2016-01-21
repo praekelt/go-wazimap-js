@@ -165,40 +165,6 @@ go.app = function() {
         self.states.add('states:display-data', function(name, opts) {
             var section_data = opts.opts_data[opts.section_id]; 
             var return_text = sub_section(section_data, opts.section_id);
-            //console.log(section_data);
-            // switch (opts.section_id) { 
-            //     case "elections" : 
-            //         return_text = get_election_data(section_data);
-            //         break;
-
-            //     case "demographics" :
-            //         return_text = get_demographics_data(section_data);
-            //         break;
-
-            //     case "households" : 
-            //         return_text = get_households_data(section_data);
-            //         break; 
-
-            //     case "service_delivery" :
-            //         return_text = get_service_delivery_data(section_data); 
-            //         break;
-
-            //     case "economics" : 
-            //         return_text = get_economics_data(section_data);
-            //         break;
-
-            //     case "education" :
-            //         return_text = get_education_data(section_data);
-            //         break; 
-
-            //     case "children" : 
-            //         return_text = get_children_data(section_data);
-            //         break; 
-
-            //     case "child_households" : 
-            //         return_text = get_child_headed_households_data(section_data);
-            //         break; 
-            // }
 
             return new PaginatedChoiceState(name, {
                 question: [
@@ -250,62 +216,6 @@ go.app = function() {
             });
         });
     });
-
-// get_election_data = function(section_data) {
-//     var sub_section_data = _.map(section_data, function(d) {
-//         return (d.name + ":"); // + d.registered_voters.name + " = " + d.registered_voters.values.this + " " + d.party_distribution.DA.name + ": " + d.party_distribution.DA.values. this + "% " + d.party_distribution.ANC.name + ": " + d.party_distribution.ANC.values.this + "%");
-//     });
-//     return sub_section_data;
-// };
-
-// get_demographics_data = function(section_data) {
-//     var sub_section_data = _.map(section_data, function(d) {
-//         return (d.name + ": " + d.citizenship_south_african.name + " = " + d.citizenship_south_african.values.this + "%, " + d.language_most_spoken.name + " = " + d.language_most_spoken.values.this + "%");
-//     });
-//     return sub_section_data;
-// };
-
-// get_households_data = function(section_data) {
-//     var sub_section_data = _.map(section_data, function(d) {
-//         return (d.name + ": " + d.informal.name + ' = ' + d.informal.values.this + "%");
-//     });
-//     return sub_section_data;
-// };
-
-// get_service_delivery_data = function(section_data) {
-//     var sub_section_data = _.map(section_data, function(d) {
-//         return (d.name + ": " + d.electricity_access_distribution.name + " = " + d.electricity_access_distribution.values.this + "%");
-//     });
-//     return sub_section_data;
-// };
-
-// get_economics_data = function(section_data) {
-//     var sub_section_data = _.map(section_data, function(d) {
-//         return (d.name); 
-//     });
-//     return sub_section_data;
-// };
-
-// get_education_data = function(section_data) {
-//     var sub_section_data = _.map(section_data, function(d) {
-//         return (d.name + ": " + d.percent_fet_or_higher.name + " : " + d.percent_fet_or_higher.values.this + "%");
-//     });
-//     return sub_section_data;
-// };
-
-// get_children_data = function(section_data) {
-//     var sub_section_data = _.map(section_data, function(d) {
-//         return (d.name + ": " + d.parental_survival_distribution.name + " = " + d.parental_survival_distribution.values.this + "%" );
-//     });
-//     return sub_section_data;
-// };
-
-// get_child_headed_households_data = function(section_data) {
-//     var sub_section_data = _.map(section_data, function(d) {
-//         return (d.name);
-//     });
-//     return sub_section_data;
-// };
 
     return {
         GoApp: GoApp
