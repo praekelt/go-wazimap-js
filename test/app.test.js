@@ -63,7 +63,9 @@ describe("app", function() {
                         reply: [
                             'Please select the location you would like to query:',
                             '1. Ward 58 (19100058), City of Cape Town, Western Cape',
-                            '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal' 
+                            '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal',
+                            // '3. Ward 82 (79800082), City of Johannesburg, Gauteng',
+                            // '4. Ward 55 (79900055), City of Tshwane, Gauteng' 
                         ].join('\n')
                     })
                     .run();
@@ -73,7 +75,9 @@ describe("app", function() {
         describe("when the user selects a location to query", function() {
             it("should return a list of data to query", function() {
                 return tester
-                    .setup.user.state('states:location')
+                    .setup.user.state('states:location', {creator_opts: {
+
+                    }})
                     .inputs('Claremont', '1')
                     .check.interaction({
                         state: 'states:select-section',
@@ -89,6 +93,9 @@ describe("app", function() {
                             '8. Child-headed Households'
                         ].join('\n')
                     })
+           //         .check.user.state(function(state) {
+                        //assert
+             //       })
                     .run();
             });
         });
