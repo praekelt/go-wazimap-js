@@ -108,9 +108,10 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'Ward 58 (19100058), City of Cape Town, Western Cape',
+                            'ward-19100058',
                             'Elections:',
                             'Provincial 2014:',
+                            'Registered voters = 19234',
                             '1. SMS details',
                             '2. Query another section',
                             '3. Exit'

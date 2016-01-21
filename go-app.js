@@ -110,7 +110,8 @@ go.app = function() {
                             section_name : choice.label,
                             section_id : choice.value,
                             opts_data : opts.data,
-                            location_name : opts.full_name
+                            location_name : opts.full_name,
+                            location_id : opts.full_geoid
                         }
                     };
                 }
@@ -123,11 +124,36 @@ go.app = function() {
     }
 
     sub_section.elections = function(data) {
-        return data.provincial_2014.name + ":";
+        return data.provincial_2014.name + ":\n" + "Registered voters = " + data.provincial_2014.registered_voters.values.this
+        ;
+    };
+
+    sub_section.demographics = function(data) {
+        return;
+    };
+
+        sub_section.households = function(data) {
+        return;
+    };
+
+        sub_section.service_delivery = function(data) {
+        return;
+    };
+
+        sub_section.economics = function(data) {
+        return;
     };
 
     sub_section.education = function(data) {
         return data.name;
+    };
+
+        sub_section.children = function(data) {
+        return;
+    };
+
+        sub_section.child_households = function(data) {
+        return;
     };
 
 
@@ -137,6 +163,7 @@ go.app = function() {
         self.states.add('states:display-data', function(name, opts) {
             var section_data = opts.opts_data[opts.section_id]; 
             var return_text = sub_section(section_data, opts.section_id);
+            //console.log(section_data);
             // switch (opts.section_id) { 
             //     case "elections" : 
             //         return_text = get_election_data(section_data);
@@ -173,13 +200,13 @@ go.app = function() {
 
             return new PaginatedChoiceState(name, {
                 question: [
-                opts.location_name,
+                opts.location_id,
                 opts.section_name + ':',
                 return_text
                 ].join('\n'),
 
                 characters_per_page : 160,
-                options_per_page : 5,
+                options_per_page : 8,
 
                 choices: [
                     new Choice('states:sms', 'SMS details'),
