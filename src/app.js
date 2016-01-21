@@ -111,56 +111,51 @@ go.app = function() {
             });
         });
 
+        function sub_section(data, section_id) {
+            return sub_section[section_id](data);
+        }
 
-    function sub_section(data, section_id) {
-        return sub_section[section_id](data);
-    }
+        sub_section.elections = function(data) {
+            //I need to loop through the party distribution to return the top 3 parties
+            // votes_results = function(data) {
+            //     var first; 
+            //     var second; 
+            //     var third;
+            //     while (data.provincial_2014.party_distribution) {
+            //         for ()
 
-    sub_section.elections = function(data) {
-        //I need to loop through the party distribution to return the top 3 parties
-        // votes_results = function(data) {
-        //     var first; 
-        //     var second; 
-        //     var third;
-        //     while (data.provincial_2014.party_distribution) {
-        //         for ()
+            //     }
+            // }
+            return data.provincial_2014.name + ":\n" + "Registered voters = " + data.provincial_2014.registered_voters.values.this + "\n" + data.provincial_2014.average_turnout.values.this + "% cast their vote";
+        };
 
-        //     }
-        // }
-        return data.provincial_2014.name + ":\n" + "Registered voters = " + data.provincial_2014.registered_voters.values.this + "\n" + data.provincial_2014.average_turnout.values.this + "% cast their vote";
-    };
+        sub_section.demographics = function(data) {
+            return "RSA Citizens: " + data.citizenship_south_african.values.this + "%\n" + "Most spoken language: " + data.language_most_spoken.name;
+        };
 
-    sub_section.demographics = function(data) {
-        return "RSA Citizens: " + data.citizenship_south_african.values.this + "%\n" + "Most spoken language: " + data.language_most_spoken.name;
-    };
+            sub_section.households = function(data) {
+            return "Informal Dwellings: " + data.informal.values.this + "%\n" + "Homes owned and paid off: " + data.tenure_distribution["Owned and fully paid off"].values.this + "%" ;
+        };
 
-        sub_section.households = function(data) {
-        return "Informal Dwellings: " + data.informal.values.this + "%\n" + "Homes owned and paid off: " + data.tenure_distribution["Owned and fully paid off"].values.this + "%" ;
-    };
+            sub_section.service_delivery = function(data) {
+            return data.electricity_access_distribution.total_no_elec.name + ": " + data.electricity_access_distribution.total_no_elec.values.this + "%\n" + "Electricity: " + data.electricity_access_distribution.total_all_elec.values.this + "%\n" + "No toilet access: " + data.percentage_no_toilet_access.values.this + "%\n" + "Water from service provider: " + data.percentage_water_from_service_provider.values.this + "%";
+        };
 
-        sub_section.service_delivery = function(data) {
-        return data.electricity_access_distribution.total_no_elec.name + ": " + data.electricity_access_distribution.total_no_elec.values.this + "%\n" + "Electricity: " + data.electricity_access_distribution.total_all_elec.values.this + "%\n" + "No toilet access: " + data.percentage_no_toilet_access.values.this + "%\n" + "Water from service provider: " + data.percentage_water_from_service_provider.values.this + "%";
-    };
+            sub_section.economics = function(data) {
+            return "Individual Income:\n" + data.individual_income_distribution.R0.name + ": " + data.individual_income_distribution.R0.values.this + "%\n" + "R13k - R26k: " + data.individual_income_distribution["R13k - R26k"].values.this + "\n Work in formal sector: " + data.sector_type_distribution["In the formal sector"].values.this + "%\n" + "Work in informal sector: " + data.sector_type_distribution["In the informal sector"].values.this + "%\n" + "Discouraged work seeker: " + data.employment_status["Discouraged work-seeker"].values.this + "%\n" + "Employed: " + data.employment_status.Employed.values.this + "%\n" + "Not economically active: " + data.employment_status["Other not economically active"].values.this + "%\n" + "Unemployed: " + data.employment_status.Unemployed.values.this + "%";
+        };
 
-        sub_section.economics = function(data) {
-        return;
-    };
+        sub_section.education = function(data) {
+            return "Matric or higher: " + data.educational_attainment.percent_fet_or_higher.values.this + "%\n" + "Grade 9 or higher: " + data.educational_attainment.percent_get_or_higher.values.this + "%\n";
+        };
 
-    sub_section.education = function(data) {
-        return data.name;
-    };
+            sub_section.children = function(data) {
+            return "Children (<18): " + data.demographics.child_adult_distribution.value.this + "%";
+        };
 
-        sub_section.children = function(data) {
-        return;
-    };
-
-        sub_section.child_households = function(data) {
-        return;
-    };
-
-
-
-
+            sub_section.child_households = function(data) {
+            return "Child-headed households in informal dwellings: " + data.child_households.informal.values.this + "%";
+        };
 
         self.states.add('states:display-data', function(name, opts) {
             var section_data = opts.opts_data[opts.section_id]; 
