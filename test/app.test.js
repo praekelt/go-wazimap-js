@@ -174,10 +174,29 @@ describe("app", function() {
                         reply: [
                             'ward-19100058',
                             'Service Delivery:',
-                            'No electricity: 0.14%',
                             'Electricity: 68.38%',
                             'No toilet access: 0.11%',
                             'Water from service provider: 98.54%',
+                            '1. SMS details',
+                            '2. Query another section',
+                            '3. Exit'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user selects to query Children", function() {
+            it("should display the Children data", function() {
+                return tester
+                    .setup.user.state('states:location')
+                    .inputs('Claremont', '1', '7')
+                    .check.interaction({
+                        state: 'states:display-data',
+                        reply: [
+                            'ward-19100058',
+                            'Children:',
+                            'Children (<18): 20.14%',
                             '1. SMS details',
                             '2. Query another section',
                             '3. Exit'
