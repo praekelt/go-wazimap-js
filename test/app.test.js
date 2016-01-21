@@ -164,6 +164,29 @@ describe("app", function() {
             });
         });
 
+        describe("when the user selects to query Service Delivery", function() {
+            it("should display the Service Delivery data", function() {
+                return tester
+                    .setup.user.state('states:location')
+                    .inputs('Claremont', '1', '4')
+                    .check.interaction({
+                        state: 'states:display-data',
+                        reply: [
+                            'ward-19100058',
+                            'Service Delivery:',
+                            'No electricity: 0.14%',
+                            'Electricity: 68.38%',
+                            'No toilet access: 0.11%',
+                            'Water from service provider: 98.54%',
+                            '1. SMS details',
+                            '2. Query another section',
+                            '3. Exit'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+        });
+
         describe("when the user chooses to query another section for the same location", function() {
             it("should return back to the select-section state ", function() {
                 return tester

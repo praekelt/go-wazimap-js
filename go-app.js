@@ -146,7 +146,7 @@ go.app = function() {
     };
 
         sub_section.service_delivery = function(data) {
-        return;
+        return data.electricity_access_distribution.total_no_elec.name + ": " + data.electricity_access_distribution.total_no_elec.values.this + "%\n" + "Electricity: " + data.electricity_access_distribution.total_all_elec.values.this + "%\n" + "No toilet access: " + data.percentage_no_toilet_access.values.this + "%\n" + "Water from service provider: " + data.percentage_water_from_service_provider.values.this + "%";
     };
 
         sub_section.economics = function(data) {
@@ -215,7 +215,7 @@ go.app = function() {
                 ].join('\n'),
 
                 characters_per_page : 160,
-                options_per_page : 8,
+                options_per_page : 10,
 
                 choices: [
                     new Choice('states:sms', 'SMS details'),
