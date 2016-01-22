@@ -125,16 +125,27 @@ go.app = function() {
         }
 
         sub_section.elections = function(data) {
-            //I would like to loop through the party distribution to return the top 3 parties
+            var provincial_parties = _.sortBy(data.provincial_2014.party_distribution, function (o) {
+                return -o.values;
+            }).slice(0, 3);
+            var provincial_party_results = _.map(provincial_parties, function(s) {
+                return (" " + s.name + " " + s.values.this + "%").toString();
+            });
+            var national_parties = _.sortBy(data.national_2014.party_distribution, function (o) {
+                return -o.values;
+            }).slice(0, 3);
+            var national_party_results = _.map(national_parties, function(s) {
+                return (" " + s.name + " " + s.values.this + "%").toString();
+            });           
             return [ 
                 data.provincial_2014.name + ":",
                 "Registered voters = " + data.provincial_2014.registered_voters.values.this, 
                 data.provincial_2014.average_turnout.values.this + "% cast their vote",
-                "Results: ANC " + data.provincial_2014.party_distribution.ANC.values.this + "%, DA " + data.provincial_2014.party_distribution.DA.values.this + "%",
+                "Results:" + provincial_party_results,
                 data.national_2014.name + ":",
                 "Registered voters = " + data.national_2014.registered_voters.values.this, 
                 data.national_2014.average_turnout.values.this + "% cast their vote",
-                "Results: ANC " + data.national_2014.party_distribution.ANC.values.this + "%, DA " + data.national_2014.party_distribution.DA.values.this + "%"
+                "Results:" + national_party_results 
             ].join("\n");
         };
 
@@ -158,7 +169,7 @@ go.app = function() {
                 "Owned and paid off: " + data.tenure_distribution["Owned and fully paid off"].values.this + "%",
                 "Rented: " + data.tenure_distribution.Rented.values.this + "%",
                 "Median Annual Income: R" + data.median_annual_income.values.this,
-                "Total Households : " + data.total_households.values.this,
+                "Total Households: " + data.total_households.values.this,
                 "Head of Household: <18 (" + data.head_of_household.under_18.values.this + "%) Female (" + data.head_of_household.female.values.this + "%)",
                 "Own car: " + data.household_goods.Car.values.this + "%"
             ].join("\n");
@@ -192,7 +203,7 @@ go.app = function() {
                 "Some secondary: " + data.educational_attainment_distribution['Some secondary'].values.this + "%",
                 "Grade 12 (Matric): " + data.educational_attainment_distribution['Grade 12 (Matric)'].values.this + "%",
                 "Undergrad: " + data.educational_attainment_distribution.Undergrad.values.this + "%",
-                "Post-Grad: " + data.educational_attainment_distribution['Post-grad'].values.this + "%"
+                "Post-grad: " + data.educational_attainment_distribution['Post-grad'].values.this + "%"
             ].join("\n");
         };
 

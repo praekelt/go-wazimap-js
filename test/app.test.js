@@ -2,8 +2,6 @@ var vumigo = require('vumigo_v02');
 var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
 
-
-
 describe("app", function() {
     describe("GoApp", function() {
         var app;
@@ -15,6 +13,7 @@ describe("app", function() {
             tester = new AppTester(app);
 
             tester
+                .setup.char_limit(400)
                 .setup.config.app({
                     name: 'test_app'
                 })
@@ -94,9 +93,6 @@ describe("app", function() {
                             '8. Child-headed Households'
                         ].join('\n')
                     })
-           //         .check.user.state(function(state) {
-                        //assert
-             //       })
                     .run();
             });
         });
@@ -114,11 +110,11 @@ describe("app", function() {
                             'Provincial 2014:',
                             'Registered voters = 19234',
                             '73.59% cast their vote',
-                            'Results: ANC 5.73%, DA 89.54%',
+                            'Results: DA 89.54%, ANC 5.73%, AGANG 1.12%',
                             'National 2014:',
                             'Registered voters = 19234',
                             '75.2% cast their vote',
-                            'Results: ANC 5.78%, DA 85.22%',
+                            'Results: DA 85.22%, ANC 5.78%, AGANG 2.77%',
                             '1. SMS details',
                             '2. Query another section',
                             '3. Exit'
@@ -137,8 +133,9 @@ describe("app", function() {
                         state: 'states:display-data',
                         reply: [
                             'ward-19100058',
+                            'Demographics:',
                             'Area population: 28624',
-                            'People/square km: 2588.35',
+                            'People/square km: 2588.3459326509205',
                             'RSA Citizens: 81.04%',
                             'Female (51.62%) Male (48.38%)',
                             'Black African (19.19%) Coloured (13.39%) Indian/Asian (4.8%) White (58.43%)',
@@ -289,7 +286,7 @@ describe("app", function() {
                         state: 'states:display-data',
                         reply: [
                             'ward-19100058',
-                            'Child-headed Households',
+                            'Child-headed Households:',
                             'Total households: 9',
                             'In informal dwellings: 0%',
                             'Women as head: 33.33%',
