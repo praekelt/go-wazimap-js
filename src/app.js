@@ -58,9 +58,9 @@ go.app = function() {
 
             return new PaginatedChoiceState(name, {
                 question: 'Select the location you would like to query:',
-                choices: location_choices,
+                choices: location_choices,                             
                 characters_per_page: 160,
-                options_per_page : 2,
+                options_per_page : null,
                 more: 'Next',
                 back: 'Back',
                 next: function(choice) {
@@ -220,9 +220,6 @@ go.app = function() {
                 opts.section_name + ':',
                 return_text
                 ].join('\n'),
-
-                characters_per_page : 160,
-                options_per_page : 2,
 
                 choices: [
                     new Choice('states:sms', 'SMS details'),
