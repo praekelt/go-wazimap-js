@@ -59,15 +59,17 @@ go.app = function() {
         });
 
         self.states.add('states:results', function(name, opts) {
-            var location_choices = _.map(opts.locations.slice(0,2), function(d) {
+            var location_choices = _.map(opts.locations, function(d) {
                 return new Choice(d.full_geoid, d.full_name);
             });
 
             return new PaginatedChoiceState(name, {
-                question: 'Please select the location you would like to query:',
+                question: 'Select the location you would like to query:',
                 choices: location_choices,
                 characters_per_page: 160,
                 options_per_page : 2,
+                more: 'Next',
+                back: 'Back',
                 next: function(choice) {
                     return { 
                         name: 'states:retrieve-location',
@@ -124,42 +126,102 @@ go.app = function() {
 
         sub_section.elections = function(data) {
             //I would like to loop through the party distribution to return the top 3 parties
-            return data.provincial_2014.name + ":\n" + "Registered voters = " + data.provincial_2014.registered_voters.values.this + "\n" + data.provincial_2014.average_turnout.values.this + "% cast their vote";
+            return [ 
+                data.provincial_2014.name + ":",
+                "Registered voters = " + data.provincial_2014.registered_voters.values.this, 
+                data.provincial_2014.average_turnout.values.this + "% cast their vote",
+                "Results: ANC " + data.provincial_2014.party_distribution.ANC.values.this + "%, DA " + data.provincial_2014.party_distribution.DA.values.this + "%",
+                data.national_2014.name + ":",
+                "Registered voters = " + data.national_2014.registered_voters.values.this, 
+                data.national_2014.average_turnout.values.this + "% cast their vote",
+                "Results: ANC " + data.national_2014.party_distribution.ANC.values.this + "%, DA " + data.national_2014.party_distribution.DA.values.this + "%"
+            ].join("\n");
         };
 
         sub_section.demographics = function(data) {
-            return "RSA Citizens: " + data.citizenship_south_african.values.this + "%\n" + "Most spoken language: " + data.language_most_spoken.name;
+            return [
+                "Area population: " + data.total_population.values.this,
+                "People/square km: " + data.population_density.values.this,
+                "RSA Citizens: " + data.citizenship_south_african.values.this + "%",
+                "Female (" + data.sex_ratio.Female.values.this + "%) Male (" + data.sex_ratio.Male.values.this + "%)",
+                "Black African (" + data.population_group_distribution['Black African'].values.this + "%) Coloured (" + data.population_group_distribution.Coloured.values.this + "%) Indian/Asian (" + data.population_group_distribution['Indian or Asian'].values.this + "%) White (" + data.population_group_distribution.White.values.this + "%)", 
+                //"Most spoken language: " + data.language_most_spoken.name,
+                "Afrikaans (" + data.language_distribution.Afrikaans.values.this + "%) English (" + data.language_distribution.English.values.this + "%) IsiXhosa (" + data.language_distribution.IsiXhosa.values.this + "%) IsiZulu (" + data.language_distribution.IsiZulu.values.this + "%)",
+                "Age: <18 (" + data.age_category_distribution['Under 18'].values.this + "%) 18-64 (" + data.age_category_distribution["18 to 64"].values.this + "%) 65+ (" + data.age_category_distribution["65 and over"].values.this + "%)",
+                "Born in RSA: " + data.born_in_south_africa.values.this + "%"
+            ].join("\n");
         };
 
         sub_section.households = function(data) {
-            return "Informal Dwellings: " + data.informal.values.this + "%\n" + "Homes owned and paid off: " + data.tenure_distribution["Owned and fully paid off"].values.this + "%" ;
+            return [
+                "Informal Dwellings: " + data.informal.values.this + "%",
+                "Owned and paid off: " + data.tenure_distribution["Owned and fully paid off"].values.this + "%",
+                "Rented: " + data.tenure_distribution.Rented.values.this + "%",
+                "Median Annual Income: R" + data.median_annual_income.values.this,
+                "Total Households : " + data.total_households.values.this,
+                "Head of Household: <18 (" + data.head_of_household.under_18.values.this + "%) Female (" + data.head_of_household.female.values.this + "%)",
+                "Own car: " + data.household_goods.Car.values.this + "%"
+            ].join("\n");
         };
 
         sub_section.service_delivery = function(data) {
-            return "Electricity: " + data.electricity_access_distribution.total_all_elec.values.this + "%\n" + "No toilet access: " + data.percentage_no_toilet_access.values.this + "%\n" + "Water from service provider: " + data.percentage_water_from_service_provider.values.this + "%";
+            return [
+                "Flush toilet access: " + data.percentage_flush_toilet_access.values.this + "%",
+                "Electricity access: " + data.percentage_electricity_access.values.this + "%",
+                "Refuse disposal: " + data.percentage_ref_disp_from_service_provider.values.this + "%"
+                ].join("\n");
         };
 
         sub_section.economics = function(data) {
-            return "Individual Income:\n" + data.individual_income_distribution.R0.name + ": " + data.individual_income_distribution.R0.values.this + "%\n" + "R13k - R26k: " + data.individual_income_distribution["R13k - R26k"].values.this + "\n Work in formal sector: " + data.sector_type_distribution["In the formal sector"].values.this + "%\n" + "Work in informal sector: " + data.sector_type_distribution["In the informal sector"].values.this + "%\n" + "Discouraged work seeker: " + data.employment_status["Discouraged work-seeker"].values.this + "%\n" + "Employed: " + data.employment_status.Employed.values.this + "%\n" + "Not economically active: " + data.employment_status["Other not economically active"].values.this + "%\n" + "Unemployed: " + data.employment_status.Unemployed.values.this + "%";
+            return [
+                "Median individual income: R" + data.median_individual_income.values.this,
+                "Home internet access: " + data.internet_access.values.this + "%",
+                "Work in formal sector: " + data.sector_type_distribution["In the formal sector"].values.this + "%",
+                "Work in informal sector: " + data.sector_type_distribution["In the informal sector"].values.this + "%",
+                "Discouraged work seeker: " + data.employment_status["Discouraged work-seeker"].values.this + "%",
+                "Employed: " + data.employment_status.Employed.values.this + "%",
+                "Not economically active: " + data.employment_status["Other not economically active"].values.this + "%",
+                "Unemployed: " + data.employment_status.Unemployed.values.this + "%"
+            ].join("\n");
         };
 
         sub_section.education = function(data) {
-            return "Matric or higher: " + data.educational_attainment.percent_fet_or_higher.values.this + "%\n" + "Grade 9 or higher: " + data.educational_attainment.percent_get_or_higher.values.this + "%\n";
+            return [
+                "None: " + data.educational_attainment_distribution.None.values.this + "%",
+                "Primary: " + data.educational_attainment_distribution.Primary.values.this + "%",
+                "Some secondary: " + data.educational_attainment_distribution['Some secondary'].values.this + "%",
+                "Grade 12 (Matric): " + data.educational_attainment_distribution['Grade 12 (Matric)'].values.this + "%",
+                "Undergrad: " + data.educational_attainment_distribution.Undergrad.values.this + "%",
+                "Post-Grad: " + data.educational_attainment_distribution['Post-grad'].values.this + "%"
+            ].join("\n");
         };
 
         sub_section.children = function(data) {
-            return "Children (<18): " + data.demographics.child_adult_distribution['Children (< 18)'].values.this + "%";
+            return [
+                "Child population: " + data.demographics.total_children.values.this,
+                "Children (<18): " + data.demographics.child_adult_distribution['Children (< 18)'].values.this + "%",
+                "Female (" + data.demographics.gender_distribution.Female.values.this + "%) Male (" + data.demographics.gender_distribution.Male.values.this + "%)",
+                "<14 with no living biological parents: " + data.demographics.percent_no_parent.values.this + "%",
+                "Ages 5-17 in school: " + data.school.percent_school_attendance.values.this + "%",
+                "Ages 15-17 in labour force: " + data.employment.percent_in_labour_force.values.this + "%",
+                "Ave monthly income of employed: R" + data.employment.median_income.values.this
+            ].join("\n");
         };
 
         sub_section.child_households = function(data) {
-            return "Child-headed households in informal dwellings: " + data.child_households.informal.values.this + "%";
+            return [
+                "Total households: " + data.total_households.values.this,
+                "In informal dwellings: " + data.informal.values.this + "%",
+                "Women as head: " + data.head_of_household.female.values.this + "%",
+                "Ave annual household income: R" + data.median_annual_income.values.this
+            ].join("\n");
         };
 
         self.states.add('states:display-data', function(name, opts) {
             var section_data = opts.opts_data[opts.section_id]; 
             var return_text = sub_section(section_data, opts.section_id);
-
-            return new PaginatedChoiceState(name, {
+            
+            return new ChoiceState(name, {
                 question: [
                 opts.location_id,
                 opts.section_name + ':',
@@ -167,7 +229,7 @@ go.app = function() {
                 ].join('\n'),
 
                 characters_per_page : 160,
-                options_per_page : 5,
+                options_per_page : 2,
 
                 choices: [
                     new Choice('states:sms', 'SMS details'),
