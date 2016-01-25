@@ -233,19 +233,11 @@ go.app = function() {
                 opts.section_name + ':',
                 return_text
                 ].join('\n'),
-                
+
                 more: 'Next',
                 exit: 'SMS Details',
 
-                // choices: [
-                //     new Choice('states:sms', 'SMS details'),
-                //     new Choice('states:select-section', 'Query another section'),
-                //     new Choice('states:end', 'Exit')],
-
                 next: function() {
-                    // if (choice.value == 'states:start' || choice.value == 'states:end') {
-                    //         return choice.value;
-                    //     } else {
                     return {
                         name: 'states:sms',
                         creator_opts: {
