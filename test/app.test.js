@@ -97,7 +97,7 @@ describe("app", function() {
             });
         });
 
-        describe("PaginatedChoiceState testing for Election data query", function() {
+        describe("PaginatedState testing for Election data query", function() {
             describe("Display data for Election query", function() {
                 it("should display page 1 of Election results", function() {
                     return tester
@@ -140,30 +140,62 @@ describe("app", function() {
             });
         });
 
-        describe("when the user selects to query Demographics", function() {
-            it("should display the Demographic data", function() {
-                return tester
-                    .setup.user.state('states:location')
-                    .inputs('Claremont', '1', '2')
-                    .check.interaction({
-                        state: 'states:display-data',
-                        reply: [
-                            'ward-19100058',
-                            'Demographics:',
-                            'Area population: 28624',
-                            'People/square km: 2588.3459326509205',
-                            'RSA Citizens: 81.04%',
-                            'Female (51.62%) Male (48.38%)',
-                            'Black African (19.19%) Coloured (13.39%) Indian/Asian (4.8%) White (58.43%)',
-                            'Afrikaans (6.87%) English (76.06%) IsiXhosa (2.61%) IsiZulu (0.57%)', 
-                            'Age: <18 (20.14%) 18-64 (69.26%) 65+ (10.6%)',
-                            'Born in RSA: 73.19%', 
-                            '1. SMS details',
-                            '2. Query another section',
-                            '3. Exit'
-                        ].join('\n')
-                    })
-                    .run();
+        describe("PaginatedState testing for Demographics query", function() {
+            describe("Display data for Demographics query", function() {
+                it("should display page 1 of Demographics results", function() {
+                    return tester
+                        .setup.user.state('states:location')
+                        .inputs('Claremont', '1', '2')
+                        .check.interaction({
+                            state: 'states:display-data',
+                            reply: [
+                                'ward-19100058',
+                                'Demographics:',
+                                'Area population: 28624',
+                                'People/square km: 2588.3459326509205',
+                                'RSA Citizens: 81.04%',
+                                'Female (51.62%) Male',
+                                '1. Next',
+                                '2. SMS Details'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+
+                it("should display page 2 of Demographics results", function() {
+                    return tester
+                        .setup.user.state('states:location')
+                        .inputs('Claremont', '1', '2', '1')
+                        .check.interaction({
+                            state: 'states:display-data',
+                            reply: [
+                                '(48.38%)',
+                                'Black African (19.19%) Coloured (13.39%) Indian/Asian (4.8%) White (58.43%)',
+                                'Afrikaans (6.87%) English (76.06%) IsiXhosa',
+                                '1. Next',
+                                '2. Back',
+                                '3. SMS Details'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+
+                it("should display page 3 of Demographics results", function() {
+                    return tester
+                        .setup.user.state('states:location')
+                        .inputs('Claremont', '1', '2', '1', '1')
+                        .check.interaction({
+                            state: 'states:display-data',
+                            reply: [
+                                '(2.61%) IsiZulu (0.57%)', 
+                                'Age: <18 (20.14%) 18-64 (69.26%) 65+ (10.6%)',
+                                'Born in RSA: 73.19%',
+                                '1. Back',
+                                '2. SMS Details'
+                            ].join('\n')
+                        })
+                        .run();
+                });
             });
         });
 
