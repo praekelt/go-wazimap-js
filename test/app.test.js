@@ -97,30 +97,45 @@ describe("app", function() {
             });
         });
 
-        describe("when the user selects to query Elections", function() {
-            it("should display the Election data", function() {
-                return tester
-                    .setup.user.state('states:location')
-                    .inputs('Claremont', '1', '1')
-                    .check.interaction({
-                        state: 'states:display-data',
-                        reply: [
-                            'ward-19100058',
-                            'Elections:',
-                            'Provincial 2014:',
-                            'Registered voters = 19234',
-                            '73.59% cast their vote',
-                            'Results: DA 89.54%, ANC 5.73%, AGANG 1.12%',
-                            'National 2014:',
-                            'Registered voters = 19234',
-                            '75.2% cast their vote',
-                            'Results: DA 85.22%, ANC 5.78%, AGANG 2.77%',
-                            '1. SMS details',
-                            '2. Query another section',
-                            '3. Exit'
-                        ].join('\n')
-                    })
-                    .run();
+        describe("PaginatedChoiceState testing for Election data query", function() {
+            describe("Display data for Election query", function() {
+                it("should display page 1 of Election results", function() {
+                    return tester
+                        .setup.user.state('states:location')
+                        .inputs('Claremont', '1', '1', '1')
+                        .check.interaction({
+                            state: 'states:display-data',
+                            reply: [
+                                'ward-19100058',
+                                'Elections:',
+                                'Provincial 2014:',
+                                'Registered voters = 19234',
+                                '73.59% cast their vote',
+                                'Results: DA 89.54%, ANC 5.73%, AGANG 1.12%',
+                                'National 2014:',
+                                'Registered voters = 19234',
+                                '75.2% cast their vote',
+                                'Results: DA 85.22%, ANC 5.78%, AGANG 2.77%',
+                                '1. Next'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+
+                it.only("should display choices on page 2", function() {
+                    return tester
+                        .setup.user.state('states:location')
+                        .inputs('Claremont', '1', '1', '1', '1')
+                        .check.interaction({
+                            state: 'states:display-data',
+                            reply: [
+                                '1. SMS details', 
+                                '2. Query another section',
+                                '3. Exit'
+                            ].join('\n')
+                        })
+                        .run();
+                });
             });
         });
 

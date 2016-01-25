@@ -7,7 +7,9 @@ go.app = function() {
     var FreeText = vumigo.states.FreeText;
     var JsonApi = vumigo.http.api.JsonApi;
     var PaginatedChoiceState = vumigo.states.PaginatedChoiceState;
+    //var PaginatedState = vumigo.states.PaginatedState;
     var _ = require("lodash");
+    //var Q = require('q');
 
     var GoApp = App.extend(function(self) {
         App.call(self, 'states:start');
@@ -225,12 +227,16 @@ go.app = function() {
             var section_data = opts.opts_data[opts.section_id]; 
             var return_text = sub_section(section_data, opts.section_id);
             
-            return new ChoiceState(name, {
+            return new PaginatedChoiceState(name, {
                 question: [
                 opts.location_id,
                 opts.section_name + ':',
                 return_text
                 ].join('\n'),
+
+                options_per_page : null, 
+                more: 'Next',
+                back: 'Back',
 
                 choices: [
                     new Choice('states:sms', 'SMS details'),
@@ -239,16 +245,16 @@ go.app = function() {
 
                 next: function(choice) {
                     if (choice.value == 'states:start' || choice.value == 'states:end') {
-                        return choice.value;
-                    } else {
-                        return {
-                            name: choice.value,
-                            creator_opts: {
-                                section_id : opts.section_id,
-                                section_data : section_data
-                            }
-                        };
-                    }
+                            return choice.value;
+                        } else {
+                            return {
+                                name: choice.value,
+                                creator_opts: {
+                                    section_id : opts.section_id,
+                                    section_data : section_data
+                                }
+                            };
+                        }
                 }
             });
         });
