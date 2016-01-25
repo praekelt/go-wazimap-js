@@ -240,8 +240,7 @@ go.app = function() {
                 opts.section_name + ':',
                 return_text
                 ].join('\n'),
-
-                options_per_page : null, 
+                
                 more: 'Next',
                 exit: 'SMS Details',
 
