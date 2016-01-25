@@ -102,7 +102,7 @@ describe("app", function() {
                 it("should display page 1 of Election results", function() {
                     return tester
                         .setup.user.state('states:location')
-                        .inputs('Claremont', '1', '1', '1')
+                        .inputs('Claremont', '1', '1')
                         .check.interaction({
                             state: 'states:display-data',
                             reply: [
@@ -111,27 +111,28 @@ describe("app", function() {
                                 'Provincial 2014:',
                                 'Registered voters = 19234',
                                 '73.59% cast their vote',
-                                'Results: DA 89.54%, ANC 5.73%, AGANG 1.12%',
-                                'National 2014:',
-                                'Registered voters = 19234',
-                                '75.2% cast their vote',
-                                'Results: DA 85.22%, ANC 5.78%, AGANG 2.77%',
-                                '1. Next'
+                                'DA 89.54%,ANC 5.73%,AGANG',
+                                '1. Next',
+                                '2. SMS Details'
                             ].join('\n')
                         })
                         .run();
                 });
 
-                it.only("should display choices on page 2", function() {
+                it("should display choices on page 2", function() {
                     return tester
                         .setup.user.state('states:location')
-                        .inputs('Claremont', '1', '1', '1', '1')
+                        .inputs('Claremont', '1', '1', '1')
                         .check.interaction({
                             state: 'states:display-data',
                             reply: [
-                                '1. SMS details', 
-                                '2. Query another section',
-                                '3. Exit'
+                                '1.12%',
+                                'National 2014:',
+                                'Registered voters = 19234',
+                                '75.2% cast their vote',
+                                'DA 85.22%,ANC 5.78%,AGANG 2.77%',
+                                '1. Back',
+                                '2. SMS Details'
                             ].join('\n')
                         })
                         .run();
