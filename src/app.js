@@ -97,7 +97,7 @@ go.app = function() {
                     new Choice('education', 'Education'),
                     new Choice('children', 'Children'),
                     new Choice('child_households', 'Child-headed Households')
-                        ],
+                ],
                 next: function(choice) {
                     return {
                         name: 'states:display-data',
@@ -173,7 +173,7 @@ go.app = function() {
                 "Flush toilet access: " + data.percentage_flush_toilet_access.values.this + "%",
                 "Electricity access: " + data.percentage_electricity_access.values.this + "%",
                 "Refuse disposal: " + data.percentage_ref_disp_from_service_provider.values.this + "%"
-                ].join("\n");
+            ].join("\n");
         };
 
         sub_section.economics = function(data) {
@@ -251,7 +251,7 @@ go.app = function() {
                             creator_opts: {
                                 return_text : return_text,
                                 section_name : opts.section_name,
-                                location_id : opts.location_id //change to location_name when working
+                                location_id : opts.location_id 
                             }
                         };
                     }
