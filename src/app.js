@@ -233,10 +233,9 @@ go.app = function() {
                 opts.section_name + ':',
                 return_text
                 ].join('\n'),
-
                 more: 'Next',
                 exit: 'SMS Details',
-
+                
                 next: function() {
                     return {
                         name: 'states:sms',
@@ -245,8 +244,7 @@ go.app = function() {
                             section_data : section_data
                         }
                     };
-                }
-                
+                }             
             });
         });
 

@@ -401,8 +401,7 @@ describe("app", function() {
                     .input('2')
                     .check.interaction({
                         state: 'states:randomLocation',
-                        reply: 'Random locations coming soon!'
-                        
+                        reply: 'Random locations coming soon!'                        
                     })
                     .run();
             });
