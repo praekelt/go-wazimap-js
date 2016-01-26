@@ -233,26 +233,32 @@ go.app = function() {
             var return_text = sub_section(section_data, opts.section_id);
             
             return new ChoiceState(name, {
-                question: [
-                opts.location_id,
-                opts.section_name + ':',
-                return_text
-                ].join('\n'),
+                question: 'You have chosen to query ' + opts.section_name + ' in ' + opts.location_id,
 
                 choices: [
-                    new Choice('states:sms', 'SMS details'),
+                    new Choice('states:sms', 'SMS details to me'),
                     new Choice('states:select-section', 'Query another section'),
+                    new Choice('states:start', 'Main Menu'),
                     new Choice('states:end', 'Exit')],
 
                 next: function(choice) {
                     if (choice.value == 'states:start' || choice.value == 'states:end') {
                         return choice.value;
-                    } else {
+                    } else if (choice.value == 'states:select-section'){
                         return {
                             name: choice.value,
                             creator_opts: {
                                 section_id : opts.section_id,
                                 section_data : section_data
+                            }
+                        };
+                    } else if (choice.value == "states:sms") {
+                        return {
+                            name: choice.value,
+                            creator_opts: {
+                                return_text : return_text,
+                                section_name : opts.section_name,
+                                location_id : opts.location_id //change to location_name when working
                             }
                         };
                     }

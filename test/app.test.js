@@ -105,19 +105,19 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'ward-19100058',
-                            'Elections:',
-                            'Provincial 2014:',
-                            'Registered voters = 19234',
-                            '73.59% cast their vote',
-                            'Results: DA 89.54%, ANC 5.73%, AGANG 1.12%',
-                            'National 2014:',
-                            'Registered voters = 19234',
-                            '75.2% cast their vote',
-                            'Results: DA 85.22%, ANC 5.78%, AGANG 2.77%',
-                            '1. SMS details',
+                            'You have chosen to query Elections in ward-19100058',
+                            '1. SMS details to me',
                             '2. Query another section',
-                            '3. Exit'
+                            '3. Main Menu',
+                            '4. Exit'
+                            // 'Provincial 2014:',
+                            // 'Registered voters = 19234',
+                            // '73.59% cast their vote',
+                            // 'Results: DA 89.54%, ANC 5.73%, AGANG 1.12%',
+                            // 'National 2014:',
+                            // 'Registered voters = 19234',
+                            // '75.2% cast their vote',
+                            // 'Results: DA 85.22%, ANC 5.78%, AGANG 2.77%',
                         ].join('\n')
                     })
                     .run();
@@ -132,19 +132,24 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'ward-19100058',
-                            'Demographics:',
-                            'Area population: 28624',
-                            'People/square km: 2588.3459326509205',
-                            'RSA Citizens: 81.04%',
-                            'Female (51.62%) Male (48.38%)',
-                            'Black African (19.19%) Coloured (13.39%) Indian/Asian (4.8%) White (58.43%)',
-                            'Afrikaans (6.87%) English (76.06%) IsiXhosa (2.61%) IsiZulu (0.57%)', 
-                            'Age: <18 (20.14%) 18-64 (69.26%) 65+ (10.6%)',
-                            'Born in RSA: 73.19%', 
-                            '1. SMS details',
+                            'You have chosen to query Demographics in ward-19100058',
+                            '1. SMS details to me',
                             '2. Query another section',
-                            '3. Exit'
+                            '3. Main Menu',
+                            '4. Exit'
+                            // 'ward-19100058',
+                            // 'Demographics:',
+                            // 'Area population: 28624',
+                            // 'People/square km: 2588.3459326509205',
+                            // 'RSA Citizens: 81.04%',
+                            // 'Female (51.62%) Male (48.38%)',
+                            // 'Black African (19.19%) Coloured (13.39%) Indian/Asian (4.8%) White (58.43%)',
+                            // 'Afrikaans (6.87%) English (76.06%) IsiXhosa (2.61%) IsiZulu (0.57%)', 
+                            // 'Age: <18 (20.14%) 18-64 (69.26%) 65+ (10.6%)',
+                            // 'Born in RSA: 73.19%', 
+                            // '1. SMS details',
+                            // '2. Query another section',
+                            // '3. Exit'
                         ].join('\n')
                     })
                     .run();
@@ -159,18 +164,23 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'ward-19100058',
-                            'Households:',
-                            'Informal Dwellings: 0.28%',
-                            'Owned and paid off: 29.66%',
-                            'Rented: 35.45%',
-                            'Median Annual Income: R230700',
-                            'Total Households: 10854',
-                            'Head of Household: <18 (9%) Female (40.4%)',
-                            'Own car: 88.34%',
-                            '1. SMS details',
+                            'You have chosen to query Households in ward-19100058',
+                            '1. SMS details to me',
                             '2. Query another section',
-                            '3. Exit'
+                            '3. Main Menu',
+                            '4. Exit'
+                            // 'ward-19100058',
+                            // 'Households:',
+                            // 'Informal Dwellings: 0.28%',
+                            // 'Owned and paid off: 29.66%',
+                            // 'Rented: 35.45%',
+                            // 'Median Annual Income: R230700',
+                            // 'Total Households: 10854',
+                            // 'Head of Household: <18 (9%) Female (40.4%)',
+                            // 'Own car: 88.34%',
+                            // '1. SMS details',
+                            // '2. Query another section',
+                            // '3. Exit'
                         ].join('\n')
                     })
                     .run();
@@ -185,14 +195,19 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'ward-19100058',
-                            'Service Delivery:',
-                            'Flush toilet access: 99%',
-                            'Electricity access: 99.86%',
-                            'Refuse disposal: 98.78%',
-                            '1. SMS details',
+                            'You have chosen to query Service Delivery in ward-19100058',
+                            '1. SMS details to me',
                             '2. Query another section',
-                            '3. Exit'
+                            '3. Main Menu',
+                            '4. Exit'
+                            // 'ward-19100058',
+                            // 'Service Delivery:',
+                            // 'Flush toilet access: 99%',
+                            // 'Electricity access: 99.86%',
+                            // 'Refuse disposal: 98.78%',
+                            // '1. SMS details',
+                            // '2. Query another section',
+                            // '3. Exit'
                         ].join('\n')
                     })
                     .run();
@@ -207,19 +222,24 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'ward-19100058',
-                            'Economics:',
-                            'Median individual income: R19200',
-                            'Home internet access: 86.96%',
-                            'Work in formal sector: 84.34%',
-                            'Work in informal sector: 4.74%',
-                            'Discouraged work seeker: 0.44%',
-                            'Employed: 65.03%',
-                            'Not economically active: 31.82%',
-                            'Unemployed: 2.71%',
-                            '1. SMS details',
+                            'You have chosen to query Economics in ward-19100058',
+                            '1. SMS details to me',
                             '2. Query another section',
-                            '3. Exit'
+                            '3. Main Menu',
+                            '4. Exit'
+                            // 'ward-19100058',
+                            // 'Economics:',
+                            // 'Median individual income: R19200',
+                            // 'Home internet access: 86.96%',
+                            // 'Work in formal sector: 84.34%',
+                            // 'Work in informal sector: 4.74%',
+                            // 'Discouraged work seeker: 0.44%',
+                            // 'Employed: 65.03%',
+                            // 'Not economically active: 31.82%',
+                            // 'Unemployed: 2.71%',
+                            // '1. SMS details',
+                            // '2. Query another section',
+                            // '3. Exit'
                         ].join('\n')
                     })
                     .run();
@@ -234,17 +254,22 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'ward-19100058',
-                            'Education:',
-                            'None: 0.27%',
-                            'Primary: 0.57%',
-                            'Some secondary: 7.05%',
-                            'Grade 12 (Matric): 33.7%',
-                            'Undergrad: 23.57%',
-                            'Post-grad: 24.53%', 
-                            '1. SMS details',
+                            'You have chosen to query Education in ward-19100058',
+                            '1. SMS details to me',
                             '2. Query another section',
-                            '3. Exit'
+                            '3. Main Menu',
+                            '4. Exit'
+                            // 'ward-19100058',
+                            // 'Education:',
+                            // 'None: 0.27%',
+                            // 'Primary: 0.57%',
+                            // 'Some secondary: 7.05%',
+                            // 'Grade 12 (Matric): 33.7%',
+                            // 'Undergrad: 23.57%',
+                            // 'Post-grad: 24.53%', 
+                            // '1. SMS details',
+                            // '2. Query another section',
+                            // '3. Exit'
                         ].join('\n')
                     })
                     .run();
@@ -259,18 +284,23 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'ward-19100058',
-                            'Children:',
-                            'Child population: 5765',
-                            'Children (<18): 20.14%',
-                            'Female (44.13%) Male (55.87%)',
-                            '<14 with no living biological parents: 9.07%',
-                            'Ages 5-17 in school: 85.99%',
-                            'Ages 15-17 in labour force: 6.76%',
-                            'Ave monthly income of employed: R0',
-                            '1. SMS details',
+                            'You have chosen to query Children in ward-19100058',
+                            '1. SMS details to me',
                             '2. Query another section',
-                            '3. Exit'
+                            '3. Main Menu',
+                            '4. Exit'
+                            // 'ward-19100058',
+                            // 'Children:',
+                            // 'Child population: 5765',
+                            // 'Children (<18): 20.14%',
+                            // 'Female (44.13%) Male (55.87%)',
+                            // '<14 with no living biological parents: 9.07%',
+                            // 'Ages 5-17 in school: 85.99%',
+                            // 'Ages 15-17 in labour force: 6.76%',
+                            // 'Ave monthly income of employed: R0',
+                            // '1. SMS details',
+                            // '2. Query another section',
+                            // '3. Exit'
                         ].join('\n')
                     })
                     .run();
@@ -285,15 +315,20 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'ward-19100058',
-                            'Child-headed Households:',
-                            'Total households: 9',
-                            'In informal dwellings: 0%',
-                            'Women as head: 33.33%',
-                            'Ave annual household income: R0',
-                            '1. SMS details',
+                            'You have chosen to query Child-headed Households in ward-19100058',
+                            '1. SMS details to me',
                             '2. Query another section',
-                            '3. Exit'
+                            '3. Main Menu',
+                            '4. Exit'
+                            // 'ward-19100058',
+                            // 'Child-headed Households:',
+                            // 'Total households: 9',
+                            // 'In informal dwellings: 0%',
+                            // 'Women as head: 33.33%',
+                            // 'Ave annual household income: R0',
+                            // '1. SMS details',
+                            // '2. Query another section',
+                            // '3. Exit'
                         ].join('\n')
                     })
                     .run();
@@ -327,7 +362,7 @@ describe("app", function() {
             it("should say good bye and end the session", function() {
                 return tester
                     .setup.user.state('states:location')
-                    .inputs('Claremont', '1', '1', '3')
+                    .inputs('Claremont', '1', '1', '4')
                     .check.interaction({
                         state: 'states:end',
                         reply: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za'
