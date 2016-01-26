@@ -53,22 +53,38 @@ describe("app", function() {
         });
 
         describe("when the user submits a location", function() {
-            it("should return a list of location results", function() {
-                return tester
-                    .setup.user.state('states:location')
-                    .input('Claremont')
-                    .check.interaction({
-                        state: 'states:results',
-                        reply: [
-                            'Select the location you would like to query:',
-                            '1. Ward 58 (19100058), City of Cape Town, Western Cape',
-                            '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal',
-                            '3. Next',
-                            //'3. Ward 82 (79800082), City of Johannesburg, Gauteng',
-                            //'4. Ward 55 (79900055), City of Tshwane, Gauteng' 
-                        ].join('\n')
-                    })
-                    .run();
+            describe("we want to display the results using PaginatedState", function() {
+                it("should return page 1 of location results", function() {
+                    return tester
+                        .setup.user.state('states:location')
+                        .input('Claremont')
+                        .check.interaction({
+                            state: 'states:results',
+                            reply: [
+                                'Select the location you would like to query:',
+                                '1. Ward 58 (19100058), City of Cape Town, Western Cape',
+                                '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal',
+                                '3. Next' 
+                            ].join('\n')
+                        })
+                        .run();
+                });
+
+                it("should return page 2 of location results", function() {
+                    return tester
+                        .setup.user.state('states:location')
+                        .inputs('Claremont', '3')
+                        .check.interaction({
+                            state: 'states:results',
+                            reply: [
+                                'Select the location you would like to query:',
+                                '1. Ward 82 (79800082), City of Johannesburg, Gauteng',
+                                '2. Ward 55 (79900055), City of Tshwane, Gauteng',
+                                '3. Back' 
+                            ].join('\n')
+                        })
+                        .run();
+                });
             });
         });
 
