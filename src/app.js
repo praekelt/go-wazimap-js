@@ -260,8 +260,18 @@ go.app = function() {
         });
 
         self.states.add('states:sms', function(name, opts) {
-            return new EndState(name, {
-                text: 'Sms coming soon!'
+            return self.im.outbound.send_to_user({
+                endpoint: 'sms',
+                content: [
+                    opts.location_id,
+                    opts.section_name + ":",
+                    opts.return_text
+                ].join('\n'),
+            })
+            .then(function() {
+                return new EndState(name, {
+                    text: 'An sms has been sent to you! Find more information on www.wazimap.co.za'
+                });
             });
         });
 

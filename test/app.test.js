@@ -1,6 +1,8 @@
 var vumigo = require('vumigo_v02');
 var fixtures = require('./fixtures');
 var AppTester = vumigo.AppTester;
+var assert = require('assert');
+var _ = require('lodash');
 
 describe("app", function() {
     describe("GoApp", function() {
@@ -13,9 +15,10 @@ describe("app", function() {
             tester = new AppTester(app);
 
             tester
-                .setup.char_limit(400)
+               // .setup.char_limit(400)
                 .setup.config.app({
-                    name: 'test_app'
+                    name: 'test_app',
+                    endpoints: {sms: {delivery_class: 'sms'}}
                 })
                 .setup(function(api) {
                     fixtures().forEach(api.http.fixtures.add);
@@ -53,22 +56,38 @@ describe("app", function() {
         });
 
         describe("when the user submits a location", function() {
-            it("should return a list of location results", function() {
-                return tester
-                    .setup.user.state('states:location')
-                    .input('Claremont')
-                    .check.interaction({
-                        state: 'states:results',
-                        reply: [
-                            'Select the location you would like to query:',
-                            '1. Ward 58 (19100058), City of Cape Town, Western Cape',
-                            '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal',
-                            '3. Next',
-                            //'3. Ward 82 (79800082), City of Johannesburg, Gauteng',
-                            //'4. Ward 55 (79900055), City of Tshwane, Gauteng' 
-                        ].join('\n')
-                    })
-                    .run();
+            describe("we want to show the results on multiple pages", function() {
+                it("should page 1 of location results", function() {
+                    return tester
+                        .setup.user.state('states:location')
+                        .input('Claremont')
+                        .check.interaction({
+                            state: 'states:results',
+                            reply: [
+                                'Select the location you would like to query:',
+                                '1. Ward 58 (19100058), City of Cape Town, Western Cape',
+                                '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal',
+                                '3. Next'
+                            ].join('\n')
+                        })
+                        .run();
+                });
+
+                it("should page 2 of location results", function() {
+                    return tester
+                        .setup.user.state('states:location')
+                        .inputs('Claremont', '3')
+                        .check.interaction({
+                            state: 'states:results',
+                            reply: [
+                                'Select the location you would like to query:',
+                                '1. Ward 82 (79800082), City of Johannesburg, Gauteng',
+                                '2. Ward 55 (79900055), City of Tshwane, Gauteng',
+                                '3. Back'
+                            ].join('\n')
+                        })
+                        .run();
+                });
             });
         });
 
@@ -353,6 +372,38 @@ describe("app", function() {
                             '7. Children',
                             '8. Child-headed Households'
                         ].join('\n')                     
+                    })
+                    .run();
+            });
+        });
+
+        describe("when the user selects to receive Election data via sms", function() {
+            it("should send the user the query via sms", function() {
+                return tester
+                    .setup.user.state('states:location')
+                    .inputs('Claremont', '1', '1', '1')
+                    .check.interaction({
+                        state: 'states:sms',
+                        reply: 'An sms has been sent to you! Find more information on www.wazimap.co.za'
+                    })
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        var sms = smses[0];
+                        assert.equal(smses.length,1);
+                        assert.equal(sms.content, [
+                            'ward-19100058',
+                            'Elections:',
+                            'Provincial 2014:',
+                            'Registered voters = 19234',
+                            '73.59% cast their vote',
+                            'Results: DA 89.54%, ANC 5.73%, AGANG 1.12%',
+                            'National 2014:',
+                            'Registered voters = 19234',
+                            '75.2% cast their vote',
+                            'Results: DA 85.22%, ANC 5.78%, AGANG 2.77%'
+                        ].join('\n'));
                     })
                     .run();
             });
