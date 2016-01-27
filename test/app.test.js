@@ -62,7 +62,7 @@ describe("app", function() {
                         reply: [
                         'Location not found. Would you like to:',
                         '1. Enter a different location',
-                        '2. Main Menu',
+                        '2. Go to Main Menu',
                         '3. Exit'
                         ].join('\n')                       
                     })

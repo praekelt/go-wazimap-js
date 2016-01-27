@@ -68,7 +68,7 @@ go.app = function() {
 
                 choices: [
                     new Choice('states:location', 'Enter a different location'),
-                    new Choice('states:start', 'Main Menu'),
+                    new Choice('states:start', 'Go to Main Menu'),
                     new Choice('states:end', 'Exit')],
 
                 next: function(choice) {
