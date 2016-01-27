@@ -52,6 +52,44 @@ describe("app", function() {
             });
         });
 
+        describe("when the user submits a location that does not exist", function() {
+            it("should ask them how they would like to proceed", function() {
+                return tester
+                    .setup.user.state('states:location')
+                    .input('Claremnt')
+                    .check.interaction({
+                        state: 'states:incorrect_location',
+                        reply: [
+                        'Location not found. Would you like to:',
+                        '1. Enter a different location',
+                        '2. Go to Main Menu',
+                        '3. Exit'
+                        ].join('\n')                       
+                    })
+                    .run();
+            });
+        });
+
+        describe("when a user enters an incorrect location, and then a valid location", function() {
+            it("should return the list of location results of the valid location", function() {
+                return tester
+                    .setup.user.state('states:location')
+                    .inputs('Claremnt', '1', 'Claremont')
+                    .check.interaction({
+                        state: 'states:results',
+                        reply: [
+                            'Select the location you would like to query:',
+                            '1. Ward 58 (19100058), City of Cape Town, Western Cape',
+                            '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal',
+                            '3. Next',
+                            //'3. Ward 82 (79800082), City of Johannesburg, Gauteng',
+                            //'4. Ward 55 (79900055), City of Tshwane, Gauteng' 
+                        ].join('\n')
+                    })
+                    .run(); 
+            });
+        });
+
         describe("when the user submits a location", function() {
             it("should return a list of location results", function() {
                 return tester
