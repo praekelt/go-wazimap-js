@@ -14,7 +14,9 @@ go.app = function() {
     var FreeText = vumigo.states.FreeText;
     var JsonApi = vumigo.http.api.JsonApi;
     var PaginatedChoiceState = vumigo.states.PaginatedChoiceState;
+    var PaginatedState = vumigo.states.PaginatedState;
     var _ = require("lodash");
+    //var Q = require('q');
 
     var GoApp = App.extend(function(self) {
         App.call(self, 'states:start');
@@ -150,23 +152,23 @@ go.app = function() {
                 return -o.values;
             }).slice(0, 3);
             var provincial_party_results = _.map(provincial_parties, function(s) {
-                return (" " + s.name + " " + s.values.this + "%").toString();
+                return (s.name + " " + s.values.this + "%").toString();
             });
             var national_parties = _.sortBy(data.national_2014.party_distribution, function (o) {
                 return -o.values;
             }).slice(0, 3);
             var national_party_results = _.map(national_parties, function(s) {
-                return (" " + s.name + " " + s.values.this + "%").toString();
+                return (s.name + " " + s.values.this + "%").toString();
             });           
             return [ 
                 data.provincial_2014.name + ":",
                 "Registered voters = " + data.provincial_2014.registered_voters.values.this, 
                 data.provincial_2014.average_turnout.values.this + "% cast their vote",
-                "Results:" + provincial_party_results,
+                provincial_party_results,
                 data.national_2014.name + ":",
                 "Registered voters = " + data.national_2014.registered_voters.values.this, 
                 data.national_2014.average_turnout.values.this + "% cast their vote",
-                "Results:" + national_party_results 
+                national_party_results 
             ].join("\n");
         };
 
@@ -253,31 +255,24 @@ go.app = function() {
             var section_data = opts.opts_data[opts.section_id]; 
             var return_text = sub_section(section_data, opts.section_id);
             
-            return new ChoiceState(name, {
-                question: [
+            return new PaginatedState(name, {
+                text: [
                 opts.location_id,
                 opts.section_name + ':',
                 return_text
                 ].join('\n'),
-
-                choices: [
-                    new Choice('states:sms', 'SMS details'),
-                    new Choice('states:select-section', 'Query another section'),
-                    new Choice('states:end', 'Exit')],
-
-                next: function(choice) {
-                    if (choice.value == 'states:start' || choice.value == 'states:end') {
-                        return choice.value;
-                    } else {
-                        return {
-                            name: choice.value,
-                            creator_opts: {
-                                section_id : opts.section_id,
-                                section_data : section_data
-                            }
-                        };
-                    }
-                }
+                more: 'Next',
+                exit: 'SMS Details',
+                
+                next: function() {
+                    return {
+                        name: 'states:sms',
+                        creator_opts: {
+                            section_id : opts.section_id,
+                            section_data : section_data
+                        }
+                    };
+                }             
             });
         });
 
