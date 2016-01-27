@@ -46,7 +46,8 @@ go.app = function() {
                             return {
                                 name: 'states:results',
                                 creator_opts: {
-                                    locations: response.data.results
+                                    locations: response.data.results,
+                                    location_input: content
                                 } 
                             };
                         }
@@ -87,7 +88,8 @@ go.app = function() {
                         name: 'states:retrieve-location',
                         creator_opts : {
                             full_geoid : choice.value,
-                            full_name : choice.label
+                            full_name : choice.label,
+                            location_input: opts.location_input
                         }
                     };
                 }   
@@ -100,7 +102,7 @@ go.app = function() {
                 .then(function(response) {
                     opts.data = response.data;
                     return  self.states.create(
-                        'states:select-section', opts);
+                        'states:select-section', opts, opts.location_input);
                 });
         });
 
@@ -125,7 +127,8 @@ go.app = function() {
                             section_id : choice.value,
                             opts_data : opts.data,
                             location_name : opts.full_name,
-                            location_id : opts.full_geoid
+                            location_id : opts.full_geoid,
+                            location_input: opts.location_input
                         }
                     };
                 }
@@ -268,6 +271,7 @@ go.app = function() {
                         return {
                             name: choice.value,
                             creator_opts: {
+                                location_input: opts.location_input,
                                 return_text : return_text,
                                 section_name : opts.section_name,
                                 location_id : opts.location_id 
@@ -283,8 +287,8 @@ go.app = function() {
                 .outbound.send_to_user({
                 endpoint: 'sms',
                 content: [
-                    opts.location_id,
-                    opts.section_name + ":",
+                    "Thank you for using the Wazimap USSD app!",
+                     opts.location_input + " " + opts.section_name + ":",
                     opts.return_text
                 ].join('\n'),
             })

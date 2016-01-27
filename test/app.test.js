@@ -360,8 +360,8 @@ describe("app", function() {
                         var sms = smses[0];
                         assert.equal(smses.length,1);
                         assert.equal(sms.content, [
-                            'ward-19100058',
-                            'Elections:',
+                            'Thank you for using the Wazimap USSD app!',
+                            'Claremont Elections:',
                             'Provincial 2014:',
                             'Registered voters = 19234',
                             '73.59% cast their vote',
