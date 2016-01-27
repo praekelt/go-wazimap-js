@@ -39,17 +39,38 @@ go.app = function() {
                     .http.get('http://wazimap.co.za/place-search/json/', {
                         params: {q : content}
                     })
-                    .then (function(response) {  
-                        return {
-                            name: 'states:results',
-                            creator_opts: {
-                                locations: response.data.results
-                            } 
-                        };
+                    .then (function(response) { 
+                        if (response.data.results.length === 0) {
+                            return 'states:incorrect_location';
+                        } else {
+                            return {
+                                name: 'states:results',
+                                creator_opts: {
+                                    locations: response.data.results
+                                } 
+                            };
+                        }
                     }); 
                 }   
             });
         });
+
+        self.states.add('states:incorrect_location', function(name) {
+            return new ChoiceState(name, {
+                question: 'Location not found. Would you like to:',
+
+                choices: [
+                    new Choice('states:location', 'Enter a different location'),
+                    new Choice('states:start', 'Main Menu'),
+                    new Choice('states:end', 'Exit')],
+
+                next: function(choice) {
+                    return choice.value;
+                }   
+            });
+        });
+
+
 
         self.states.add('states:results', function(name, opts) {
             var location_choices = _.map(opts.locations, function(d) {

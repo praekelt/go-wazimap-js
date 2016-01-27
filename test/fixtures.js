@@ -38,6 +38,21 @@ module.exports = function() {
         }
     },
     {
+        "request": {
+            "method": "GET",
+            "url": "http://wazimap.co.za/place-search/json/",
+            "params": {
+                "q": "Claremnt"
+            }
+        },
+        "response": {
+            "code": 200,
+            "data": {
+                "results": []
+            }
+        }
+    },
+    {
         "request" : {
             "method": "GET",
             "url": "http://wazimap.co.za/profiles/ward-19100058.json"
