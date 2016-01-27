@@ -146,18 +146,26 @@ go.app = function() {
         }
 
         sub_section.elections = function(data) {
-            var provincial_parties = _.sortBy(data.provincial_2014.party_distribution, function (o) {
-                return -o.values;
-            }).slice(0, 3);
+            var provincial_parties =_(data.provincial_2014.party_distribution)
+              .omit('metadata')
+              .sortBy(function(o) { return -o.values.this; })
+              .slice(0, 3)
+              .value();
+
             var provincial_party_results = _.map(provincial_parties, function(s) {
                 return (" " + s.name + " " + s.values.this + "%").toString();
             });
-            var national_parties = _.sortBy(data.national_2014.party_distribution, function (o) {
-                return -o.values;
-            }).slice(0, 3);
+
+            var national_parties =_(data.national_2014.party_distribution)
+              .omit('metadata')
+              .sortBy(function(o) { return -o.values.this; })
+              .slice(0, 3)
+              .value();
+
             var national_party_results = _.map(national_parties, function(s) {
                 return (" " + s.name + " " + s.values.this + "%").toString();
-            });           
+            });  
+                     
             return [ 
                 data.provincial_2014.name + ":",
                 "Registered voters = " + data.provincial_2014.registered_voters.values.this, 
