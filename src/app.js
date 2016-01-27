@@ -279,7 +279,8 @@ go.app = function() {
         });
 
         self.states.add('states:sms', function(name, opts) {
-            return self.im.outbound.send_to_user({
+            return self.im
+                .outbound.send_to_user({
                 endpoint: 'sms',
                 content: [
                     opts.location_id,
@@ -289,7 +290,8 @@ go.app = function() {
             })
             .then(function() {
                 return new EndState(name, {
-                    text: 'An sms has been sent to you! Find more information on www.wazimap.co.za'
+                    text: 'An sms has been sent to you! Find more information on www.wazimap.co.za',
+                    next: 'states:start'
                 });
             });
         });
