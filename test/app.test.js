@@ -177,7 +177,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'You have chosen to query Elections in ward-19100058',
+                            'You have chosen to query Elections in Claremont',
                             '1. SMS details to me',
                             '2. Query another section',
                             '3. Main Menu',
@@ -196,7 +196,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'You have chosen to query Demographics in ward-19100058',
+                            'You have chosen to query Demographics in Claremont',
                             '1. SMS details to me',
                             '2. Query another section',
                             '3. Main Menu',
@@ -215,7 +215,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'You have chosen to query Households in ward-19100058',
+                            'You have chosen to query Households in Claremont',
                             '1. SMS details to me',
                             '2. Query another section',
                             '3. Main Menu',
@@ -234,7 +234,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'You have chosen to query Service Delivery in ward-19100058',
+                            'You have chosen to query Service Delivery in Claremont',
                             '1. SMS details to me',
                             '2. Query another section',
                             '3. Main Menu',
@@ -253,7 +253,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'You have chosen to query Economics in ward-19100058',
+                            'You have chosen to query Economics in Claremont',
                             '1. SMS details to me',
                             '2. Query another section',
                             '3. Main Menu',
@@ -272,7 +272,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'You have chosen to query Education in ward-19100058',
+                            'You have chosen to query Education in Claremont',
                             '1. SMS details to me',
                             '2. Query another section',
                             '3. Main Menu',
@@ -291,7 +291,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'You have chosen to query Children in ward-19100058',
+                            'You have chosen to query Children in Claremont',
                             '1. SMS details to me',
                             '2. Query another section',
                             '3. Main Menu',
@@ -310,7 +310,7 @@ describe("app", function() {
                     .check.interaction({
                         state: 'states:display-data',
                         reply: [
-                            'You have chosen to query Child-headed Households in ward-19100058',
+                            'You have chosen to query Child-headed Households in Claremont',
                             '1. SMS details to me',
                             '2. Query another section',
                             '3. Main Menu',
@@ -360,7 +360,6 @@ describe("app", function() {
                         var sms = smses[0];
                         assert.equal(smses.length,1);
                         assert.equal(sms.content, [
-                            'Thank you for using the Wazimap USSD app!',
                             'Claremont Elections:',
                             'Provincial 2014:',
                             'Registered voters = 19234',
@@ -369,7 +368,9 @@ describe("app", function() {
                             'National 2014:',
                             'Registered voters = 19234',
                             '75.2% cast their vote',
-                            'Results: DA 85.22%, ANC 5.78%, AGANG 2.77%'
+                            'Results: DA 85.22%, ANC 5.78%, AGANG 2.77%',
+                            'Wazimap USSD: *120*8864*1601#',
+                            'www.wazimap.co.za'
                         ].join('\n'));
                     })
                     .run();

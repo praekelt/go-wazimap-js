@@ -255,7 +255,7 @@ go.app = function() {
             var return_text = sub_section(section_data, opts.section_id);
             
             return new ChoiceState(name, {
-                question: 'You have chosen to query ' + opts.section_name + ' in ' + opts.location_id,
+                question: 'You have chosen to query ' + opts.section_name + ' in ' + opts.location_input.charAt(0).toUpperCase() + opts.location_input.slice(1),
 
                 choices: [
                     new Choice('states:sms', 'SMS details to me'),
@@ -294,9 +294,10 @@ go.app = function() {
                 .outbound.send_to_user({
                 endpoint: 'sms',
                 content: [
-                    "Thank you for using the Wazimap USSD app!",
-                     opts.location_input + " " + opts.section_name + ":",
-                    opts.return_text
+                    opts.location_input + " " + opts.section_name + ":",
+                    opts.return_text,
+                    'Wazimap USSD: *120*8864*1601#',
+                    'www.wazimap.co.za'
                 ].join('\n'),
             })
             .then(function() {
