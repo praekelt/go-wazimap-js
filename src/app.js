@@ -289,16 +289,15 @@ go.app = function() {
                 ].join('\n'),
             })
             .then(function() {
-                return new EndState(name, {
-                    text: 'An sms has been sent to you! Find more information on www.wazimap.co.za',
-                    next: 'states:start'
-                });
+                return self.states.create(
+                    'states:end');
             });
         });
 
         self.states.add('states:randomLocation', function(name) {
             return new EndState(name, {
-                text: 'Random locations coming soon!'
+                text: 'Random locations coming soon!',
+                next: 'states:start'
             });
         });
 

@@ -350,8 +350,8 @@ describe("app", function() {
                     .setup.user.state('states:location')
                     .inputs('Claremont', '1', '1', '1')
                     .check.interaction({
-                        state: 'states:sms',
-                        reply: 'An sms has been sent to you! Find more information on www.wazimap.co.za'
+                        state: 'states:end',
+                        reply: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za'
                     })
                     .check(function(api) {
                         var smses = _.where(api.outbound.store, {
