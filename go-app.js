@@ -22,6 +22,12 @@ go.app = function() {
         self.init = function() {            
             self.http = new JsonApi(self.im);       
         };
+
+        function capitaliseLocation(string) {
+            return string.replace(/\w\S*/g, function(s){
+                return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
+            });
+        }
         
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
@@ -29,7 +35,7 @@ go.app = function() {
         
                 choices: [
                     new Choice('states:location', 'Enter a location to query'),
-                    new Choice ('states:randomLocation', 'Query a random location'),
+                    new Choice ('states:provincial-data', 'Query Provincial Data'),
                     new Choice('states:end', 'Exit')],
 
                 next: function(choice) {
@@ -53,7 +59,8 @@ go.app = function() {
                             return {
                                 name: 'states:results',
                                 creator_opts: {
-                                    locations: response.data.results
+                                    locations: response.data.results,
+                                    location_input: content
                                 } 
                             };
                         }
@@ -75,9 +82,7 @@ go.app = function() {
                     return choice.value;
                 }   
             });
-        });
-
-
+        });      
 
         self.states.add('states:results', function(name, opts) {
             var location_choices = _.map(opts.locations, function(d) {
@@ -96,7 +101,8 @@ go.app = function() {
                         name: 'states:retrieve-location',
                         creator_opts : {
                             full_geoid : choice.value,
-                            full_name : choice.label
+                            full_name : choice.label,
+                            location_input: opts.location_input
                         }
                     };
                 }   
@@ -109,7 +115,7 @@ go.app = function() {
                 .then(function(response) {
                     opts.data = response.data;
                     return  self.states.create(
-                        'states:select-section', opts);
+                        'states:select-section', opts, opts.location_input);
                 });
         });
 
@@ -125,7 +131,7 @@ go.app = function() {
                     new Choice('education', 'Education'),
                     new Choice('children', 'Children'),
                     new Choice('child_households', 'Child-headed Households')
-                        ],
+                ],
                 next: function(choice) {
                     return {
                         name: 'states:display-data',
@@ -134,7 +140,8 @@ go.app = function() {
                             section_id : choice.value,
                             opts_data : opts.data,
                             location_name : opts.full_name,
-                            location_id : opts.full_geoid
+                            location_id : opts.full_geoid,
+                            location_input: opts.location_input
                         }
                     };
                 }
@@ -146,18 +153,26 @@ go.app = function() {
         }
 
         sub_section.elections = function(data) {
-            var provincial_parties = _.sortBy(data.provincial_2014.party_distribution, function (o) {
-                return -o.values;
-            }).slice(0, 3);
+            var provincial_parties =_(data.provincial_2014.party_distribution)
+              .omit('metadata')
+              .sortBy(function(o) { return -o.values.this; })
+              .slice(0, 3)
+              .value();
+
             var provincial_party_results = _.map(provincial_parties, function(s) {
                 return (" " + s.name + " " + s.values.this + "%").toString();
             });
-            var national_parties = _.sortBy(data.national_2014.party_distribution, function (o) {
-                return -o.values;
-            }).slice(0, 3);
+
+            var national_parties =_(data.national_2014.party_distribution)
+              .omit('metadata')
+              .sortBy(function(o) { return -o.values.this; })
+              .slice(0, 3)
+              .value();
+
             var national_party_results = _.map(national_parties, function(s) {
                 return (" " + s.name + " " + s.values.this + "%").toString();
-            });           
+            });  
+                     
             return [ 
                 data.provincial_2014.name + ":",
                 "Registered voters = " + data.provincial_2014.registered_voters.values.this, 
@@ -201,7 +216,7 @@ go.app = function() {
                 "Flush toilet access: " + data.percentage_flush_toilet_access.values.this + "%",
                 "Electricity access: " + data.percentage_electricity_access.values.this + "%",
                 "Refuse disposal: " + data.percentage_ref_disp_from_service_provider.values.this + "%"
-                ].join("\n");
+            ].join("\n");
         };
 
         sub_section.economics = function(data) {
@@ -254,26 +269,33 @@ go.app = function() {
             var return_text = sub_section(section_data, opts.section_id);
             
             return new ChoiceState(name, {
-                question: [
-                opts.location_id,
-                opts.section_name + ':',
-                return_text
-                ].join('\n'),
+                question: 'You have chosen to query ' + opts.section_name + ' in ' + capitaliseLocation(opts.location_input),
 
                 choices: [
-                    new Choice('states:sms', 'SMS details'),
+                    new Choice('states:sms', 'SMS details to me'),
                     new Choice('states:select-section', 'Query another section'),
+                    new Choice('states:start', 'Main Menu'),
                     new Choice('states:end', 'Exit')],
 
                 next: function(choice) {
                     if (choice.value == 'states:start' || choice.value == 'states:end') {
                         return choice.value;
-                    } else {
+                    } else if (choice.value == 'states:select-section'){
                         return {
                             name: choice.value,
                             creator_opts: {
                                 section_id : opts.section_id,
                                 section_data : section_data
+                            }
+                        };
+                    } else if (choice.value == "states:sms") {
+                        return {
+                            name: choice.value,
+                            creator_opts: {
+                                location_input: opts.location_input,
+                                return_text : return_text,
+                                section_name : opts.section_name,
+                                location_id : opts.location_id 
                             }
                         };
                     }
@@ -282,16 +304,89 @@ go.app = function() {
         });
 
         self.states.add('states:sms', function(name, opts) {
-            return new EndState(name, {
-                text: 'Sms coming soon!'
+            return self.im
+                .outbound.send_to_user({
+                endpoint: 'sms',
+                content: [
+                    capitaliseLocation(opts.location_input) + " " + opts.section_name + ":",
+                    opts.return_text,
+                    'Wazimap USSD: *120*8864*1601#',
+                    'www.wazimap.co.za'
+                ].join('\n'),
+            })
+            .then(function() {
+                return self.states.create(
+                    'states:end');
             });
         });
 
-        self.states.add('states:randomLocation', function(name) {
-            return new EndState(name, {
-                text: 'Random locations coming soon!'
+        self.states.add('states:provincial-data', function(name) {
+            return new PaginatedChoiceState(name, {
+                question: 'Provincial Data on:',
+                choices: [
+                    new Choice('population', 'Population'),
+                    new Choice('p_voting_results', 'Provincial Voting Results'),
+                    new Choice('n_voting_results', 'National Voting Results'),
+                    new Choice('employed', '% Employed'),
+                    new Choice('education', 'Education'),
+                    new Choice('language', 'Most Spoken Language'),
+                    new Choice('services', 'Water, Toilet and Electricity'),
+                    new Choice('house_income', 'Annual Household Income'),
+                ],
+                options_per_page : null,
+                more: 'More',
+                back: 'Back',
+                next: function(choice) {
+                    return {
+                        name: 'states:display-province-data',
+                        creator_opts : {
+                            section_name : choice.label,
+                        }
+                    };
+                }
             });
         });
+
+        self.states.add('states:display-province-data', function(name, opts) {
+            var section_data = opts.opts_data[opts.section_id]; 
+            var return_text = sub_section(section_data, opts.section_id);
+            
+            return new ChoiceState(name, {
+                question: 'You have chosen to query provincial data on ' + opts.section_name,
+
+                choices: [
+                    new Choice('states:sms', 'SMS details to me'),
+                    new Choice('states:provincial-data', 'Query another section'),
+                    new Choice('states:start', 'Main Menu'),
+                    new Choice('states:end', 'Exit')],
+
+                next: function(choice) {
+                    if (choice.value == 'states:start' || choice.value == 'states:end') {
+                        return choice.value;
+                    } else if (choice.value == 'states:select-section'){
+                        return {
+                            name: choice.value,
+                            creator_opts: {
+                                section_id : opts.section_id,
+                                section_data : section_data
+                            }
+                        };
+                    } else if (choice.value == "states:sms") {
+                        return {
+                            name: choice.value,
+                            creator_opts: {
+                                location_input: opts.location_input,
+                                return_text : return_text,
+                                section_name : opts.section_name,
+                                location_id : opts.location_id 
+                            }
+                        };
+                    }
+                }
+            });
+        });
+
+
 
         self.states.add('states:end', function(name) {
             return new EndState(name, {
@@ -304,8 +399,6 @@ go.app = function() {
     return {
         GoApp: GoApp
     };
-
-
 }();
 
 go.init = function() {
