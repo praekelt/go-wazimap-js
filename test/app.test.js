@@ -421,7 +421,7 @@ describe("app", function() {
                         state: 'states:provincial-data',
                         reply: [
                             'Provincial Data on:',
-                            '1. Water, Toilet and Electricity',
+                            '1. Water, Toilet Access and Electricity',
                             '2. Annual Household Income',
                             '3. Back'
                         ].join('\n')
