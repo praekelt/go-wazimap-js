@@ -334,6 +334,7 @@ go.app = function() {
                         name: 'states:display-province-data',
                         creator_opts : {
                             section_name : choice.label,
+                            section_id : choice.value,
                         }
                     };
                 }
@@ -345,9 +346,10 @@ go.app = function() {
                 question: 'You have chosen to query provincial data on ' + opts.section_name,
 
                 choices: [
-                    new Choice('states:sms', 'SMS details to me'),
+                    new Choice('states:provincial-sms', 'SMS details to me'),
                     new Choice('states:provincial-data', 'Query another section'),
-                    new Choice('states:start', 'Main Menu'),                        new Choice('states:end', 'Exit')],
+                    new Choice('states:start', 'Main Menu'),                        
+                    new Choice('states:end', 'Exit')],
 
                 next: function(choice) {
                     if (choice.value == 'states:start' || choice.value == 'states:end') {
@@ -356,8 +358,6 @@ go.app = function() {
                         return {
                             name: choice.value,
                             creator_opts: {
-                                section_id : opts.section_id,
-                                section_data : section_data
                             }
                         };
                     } else if (choice.value == "states:provincial-sms") {
@@ -365,6 +365,7 @@ go.app = function() {
                             name: choice.value,
                             creator_opts: {
                                 section_name : opts.section_name,
+                                section_id : opts.section_id,
                             }
                         };
                     }
@@ -372,12 +373,120 @@ go.app = function() {
             });
         });
 
+        function provincial_data(data){
+            if (data === 'population') {
+                return [
+                    'South Africa: 51770561',
+                    'Gauteng: 12272263',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'p_voting_results') {
+                return [
+                    'Gauteng: 54% ANC',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'n_voting_results') {
+                return [
+                    'South Africa: 62% ANC',
+                    'Gauteng: 55% ANC',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'employment') {
+                return [
+                    'South Africa: 38.9%',
+                    'Gauteng: 50.6%',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'education') {
+                return [
+                    'South Africa: Gr9+ (65.8%) Gr12+ (39.3%)',
+                    'Gauteng: Gr9+ (77.3%) Gr12+ (50.8%)',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'language') {
+                return [
+                    'South Africa: IsiZulu',
+                    'Gauteng: IsiZulu',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'services') {
+                return [
+                    'Water, Electricity, Flush Toilet Access'
+                    'South Africa: W(76.9%) E(85.3%) T(59.3%)',
+                    'Gauteng: W(93.5%) E(87.9%) T(87.3%)',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'house_income') {
+                return [
+                    'South Africa: R29400',
+                    'Gauteng: 12272263',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+        }
+
         self.states.add('states:provincial-sms', function(name, opts) {
             return self.im
                 .outbound.send_to_user({
                 endpoint: 'sms',
                 content: [
                     opts.section_name + ":",
+                    provincial_data(opts.section_id),
                     'Wazimap USSD: *120*8864*1601#',
                     'www.wazimap.co.za'
                 ].join('\n'),

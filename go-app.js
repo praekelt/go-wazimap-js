@@ -341,6 +341,7 @@ go.app = function() {
                         name: 'states:display-province-data',
                         creator_opts : {
                             section_name : choice.label,
+                            section_id : choice.value,
                         }
                     };
                 }
@@ -352,9 +353,10 @@ go.app = function() {
                 question: 'You have chosen to query provincial data on ' + opts.section_name,
 
                 choices: [
-                    new Choice('states:sms', 'SMS details to me'),
+                    new Choice('states:provincial-sms', 'SMS details to me'),
                     new Choice('states:provincial-data', 'Query another section'),
-                    new Choice('states:start', 'Main Menu'),                        new Choice('states:end', 'Exit')],
+                    new Choice('states:start', 'Main Menu'),                        
+                    new Choice('states:end', 'Exit')],
 
                 next: function(choice) {
                     if (choice.value == 'states:start' || choice.value == 'states:end') {
@@ -363,8 +365,6 @@ go.app = function() {
                         return {
                             name: choice.value,
                             creator_opts: {
-                                section_id : opts.section_id,
-                                section_data : section_data
                             }
                         };
                     } else if (choice.value == "states:provincial-sms") {
@@ -372,6 +372,7 @@ go.app = function() {
                             name: choice.value,
                             creator_opts: {
                                 section_name : opts.section_name,
+                                section_id : opts.section_id,
                             }
                         };
                     }
@@ -379,12 +380,28 @@ go.app = function() {
             });
         });
 
+        function provincial_data(data){
+            if (data === 'population') {
+                return [
+                    'Gauteng: 12272263',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+        }
+
         self.states.add('states:provincial-sms', function(name, opts) {
             return self.im
                 .outbound.send_to_user({
                 endpoint: 'sms',
                 content: [
                     opts.section_name + ":",
+                    provincial_data(opts.section_id),
                     'Wazimap USSD: *120*8864*1601#',
                     'www.wazimap.co.za'
                 ].join('\n'),
