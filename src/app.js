@@ -331,6 +331,4 @@ go.app = function() {
     return {
         GoApp: GoApp
     };
-
-
 }();
