@@ -53,7 +53,7 @@ go.app = function() {
                                 name: 'states:results',
                                 creator_opts: {
                                     locations: response.data.results,
-                                    location_input: content
+                                    location_input: content,
                                 } 
                             };
                         }

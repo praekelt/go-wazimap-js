@@ -38,7 +38,7 @@ module.exports = function() {
         }
     },
     {
-        "request": {
+        "request" : {
             "method": "GET",
             "url": "http://wazimap.co.za/place-search/json/",
             "params": {
