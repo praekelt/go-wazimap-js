@@ -338,8 +338,6 @@ go.app = function() {
     return {
         GoApp: GoApp
     };
-
-
 }();
 
 go.init = function() {
