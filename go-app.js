@@ -383,6 +383,98 @@ go.app = function() {
         function provincial_data(data){
             if (data === 'population') {
                 return [
+                    'South Africa: 51770561',
+                    'Gauteng: 12272263',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'p_voting_results') {
+                return [
+                    'Gauteng: 54% ANC',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'n_voting_results') {
+                return [
+                    'South Africa: 62% ANC',
+                    'Gauteng: 55% ANC',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'employment') {
+                return [
+                    'South Africa: 38.9%',
+                    'Gauteng: 50.6%',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'education') {
+                return [
+                    'South Africa: Gr9+ (65.8%) Gr12+ (39.3%)',
+                    'Gauteng: Gr9+ (77.3%) Gr12+ (50.8%)',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'language') {
+                return [
+                    'South Africa: IsiZulu',
+                    'Gauteng: IsiZulu',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'services') {
+                return [
+                    'Water, Electricity, Flush Toilet Access',
+                    'South Africa: W(76.9%) E(85.3%) T(59.3%)',
+                    'Gauteng: W(93.5%) E(87.9%) T(87.3%)',
+                    'Mpumalanga: 4039939',
+                    'Limpopo: 5404868',
+                    'North-West: 3509953',
+                    'Kwazulu-Natal: 10267300',
+                    'Eastern Cape: 6562054',
+                    'Northern Cape: 1145861',
+                    'Western Cape: 5822734'
+                ].join('\n');
+            }
+            if (data === 'house_income') {
+                return [
+                    'South Africa: R29400',
                     'Gauteng: 12272263',
                     'Mpumalanga: 4039939',
                     'Limpopo: 5404868',
@@ -411,8 +503,6 @@ go.app = function() {
                     'states:end');
             });
         });
-
-
 
         self.states.add('states:end', function(name) {
             return new EndState(name, {

@@ -453,7 +453,7 @@ go.app = function() {
             }
             if (data === 'services') {
                 return [
-                    'Water, Electricity, Flush Toilet Access'
+                    'Water, Electricity, Flush Toilet Access',
                     'South Africa: W(76.9%) E(85.3%) T(59.3%)',
                     'Gauteng: W(93.5%) E(87.9%) T(87.3%)',
                     'Mpumalanga: 4039939',
@@ -496,8 +496,6 @@ go.app = function() {
                     'states:end');
             });
         });
-
-
 
         self.states.add('states:end', function(name) {
             return new EndState(name, {
