@@ -330,8 +330,17 @@ go.app = function() {
                     new Choice('employed', '% Employed'),
                     new Choice('education', 'Education'),
                     new Choice('language', 'Most Spoken Language'),
-                    new Choice('services', 'Water, Toilet Access and Electricity'),
-                    new Choice('house_income', 'Annual Household Income'),
+                    new Choice('citizen', 'Citizenship'),
+                    new Choice('age', 'Median Age'),
+                    new Choice('water', 'Water Access'),
+                    new Choice('electricity', 'Electricity Access'),
+                    new Choice('toilets', 'Flush/Chemical Toilet Access'),
+                    new Choice('internet', 'Internet Access'),
+                    new Choice('individual_income', 'Average Monthly Individual Income'),
+                    new Choice('house_income', 'Average Annual Household Income'),
+                    new Choice('household_head', 'Woman as Head of Household'),
+                    new Choice('child_households', 'Child-headed Households'),
+                    new Choice('informal_house', '% Informal Dwellings')
                 ],
                 options_per_page : null,
                 more: 'More',
@@ -359,14 +368,8 @@ go.app = function() {
                     new Choice('states:end', 'Exit')],
 
                 next: function(choice) {
-                    if (choice.value == 'states:start' || choice.value == 'states:end') {
+                    if (choice.value == 'states:start' || choice.value == 'states:end' || choice.value == 'states:provincial-data') {
                         return choice.value;
-                    } else if (choice.value == 'states:provincial-data'){
-                        return {
-                            name: choice.value,
-                            creator_opts: {
-                            }
-                        };
                     } else if (choice.value == "states:provincial-sms") {
                         return {
                             name: choice.value,

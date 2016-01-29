@@ -431,7 +431,7 @@ describe("app", function() {
                     .run();
             });
 
-            it("should return page 1 of options to query", function() {
+            it("should return page 2 of options to query", function() {
                 return tester
                     .setup.user.state('states:start')
                     .inputs('2', '7')
@@ -439,13 +439,53 @@ describe("app", function() {
                         state: 'states:provincial-data',
                         reply: [
                             'Provincial Data on:',
-                            '1. Water, Toilet Access and Electricity',
-                            '2. Annual Household Income',
+                            '1. Citizenship',
+                            '2. Median Age',
+                            '3. Water Access',
+                            '4. Electricity Access',
+                            '5. Flush/Chemical Toilet Access',
+                            '6. Internet Access',
+                            '7. More',
+                            '8. Back'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+
+            it("should return page 3 of options to query", function() {
+                return tester
+                    .setup.user.state('states:start')
+                    .inputs('2', '7', '7')
+                    .check.interaction({
+                        state: 'states:provincial-data',
+                        reply: [
+                            'Provincial Data on:',
+                            '1. Average Monthly Individual Income',
+                            '2. Average Annual Household Income',
+                            '3. Woman as Head of Household',
+                            '4. More',
+                            '5. Back'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+
+            it("should return page 4 of options to query", function() {
+                return tester
+                    .setup.user.state('states:start')
+                    .inputs('2', '7', '7', '4')
+                    .check.interaction({
+                        state: 'states:provincial-data',
+                        reply: [
+                            'Provincial Data on:',
+                            '1. Child-headed Households',
+                            '2. % Informal Dwellings',
                             '3. Back'
                         ].join('\n')
                     })
                     .run();
             });
+
         });
     });
 
