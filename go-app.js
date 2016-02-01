@@ -22,12 +22,6 @@ go.app = function() {
         self.init = function() {            
             self.http = new JsonApi(self.im);       
         };
-
-        function capitaliseLocation(string) {
-            return string.replace(/\w\S*/g, function(s){
-                return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
-            });
-        }
         
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
@@ -148,7 +142,87 @@ go.app = function() {
             });
         });
 
-        function sub_section(data, section_id) {
+        self.states.add('states:display-data', function(name, opts) {
+            var section_data = opts.opts_data[opts.section_id]; 
+            var return_text = sub_section(section_data, opts.section_id);
+            return new ChoiceState(name, {
+                question: 'You have chosen to query ' + opts.section_name + ' in ' + capitaliseLocation(opts.location_input),
+
+                choices: [
+                    new Choice('states:sms', 'SMS details to me'),
+                    new Choice('states:retrieve-location', 'Query another section'),
+                    new Choice('states:start', 'Main Menu'),
+                    new Choice('states:end', 'Exit')],
+
+                next: function(choice) {
+                    if (choice.value == 'states:start' || choice.value == 'states:end') {
+                        return choice.value;
+                    } else if (choice.value == 'states:retrieve-location'){
+                        return {
+                            name: choice.value,
+                            creator_opts: {
+                                full_geoid : opts.location_id,
+                                full_name: opts.location_name,
+                                location_input : opts.location_input
+                            }
+                        };
+                    } else if (choice.value == "states:sms") {
+                        return {
+                            name: choice.value,
+                            creator_opts: {
+                                location_input: opts.location_input,
+                                return_text : return_text,
+                                section_name : opts.section_name,
+                                location_id : opts.location_id 
+                            }
+                        };
+                    }
+                }
+            });
+        });
+
+        self.states.add('states:sms', function(name, opts) {
+            return self.im
+                .outbound.send_to_user({
+                endpoint: 'sms',
+                content: [
+                    capitaliseLocation(opts.location_input) + " " + opts.section_name + ":",
+                    opts.return_text,
+                    'Wazimap USSD: *120*8864*1601#',
+                    'www.wazimap.co.za'
+                ].join('\n'),
+            })
+            .then(function() {
+                return self.states.create(
+                    'states:end');
+            });
+        });
+
+        self.states.add('states:randomLocation', function(name) {
+            return new EndState(name, {
+                text: 'Random locations coming soon!',
+                next: 'states:start'
+            });
+        });
+
+        self.states.add('states:end', function(name) {
+            return new EndState(name, {
+                text: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za',
+                next: 'states:start'
+            });
+        });
+
+//function for capitalising location names
+
+        function capitaliseLocation(string) {
+            return string.replace(/\w\S*/g, function(s){
+                return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
+            });
+        }
+
+//functions for accessing data per sub-section
+
+function sub_section(data, section_id) {
             return sub_section[section_id](data);
         }
 
@@ -262,77 +336,7 @@ go.app = function() {
                 "Women as head: " + data.head_of_household.female.values.this + "%",
                 "Ave annual household income: R" + data.median_annual_income.values.this
             ].join("\n");
-        };
-
-        self.states.add('states:display-data', function(name, opts) {
-            var section_data = opts.opts_data[opts.section_id]; 
-            var return_text = sub_section(section_data, opts.section_id);
-            
-            return new ChoiceState(name, {
-                question: 'You have chosen to query ' + opts.section_name + ' in ' + capitaliseLocation(opts.location_input),
-
-                choices: [
-                    new Choice('states:sms', 'SMS details to me'),
-                    new Choice('states:select-section', 'Query another section'),
-                    new Choice('states:start', 'Main Menu'),
-                    new Choice('states:end', 'Exit')],
-
-                next: function(choice) {
-                    if (choice.value == 'states:start' || choice.value == 'states:end') {
-                        return choice.value;
-                    } else if (choice.value == 'states:select-section'){
-                        return {
-                            name: choice.value,
-                            creator_opts: {
-                                section_id : opts.section_id,
-                                section_data : section_data
-                            }
-                        };
-                    } else if (choice.value == "states:sms") {
-                        return {
-                            name: choice.value,
-                            creator_opts: {
-                                location_input: opts.location_input,
-                                return_text : return_text,
-                                section_name : opts.section_name,
-                                location_id : opts.location_id 
-                            }
-                        };
-                    }
-                }
-            });
-        });
-
-        self.states.add('states:sms', function(name, opts) {
-            return self.im
-                .outbound.send_to_user({
-                endpoint: 'sms',
-                content: [
-                    capitaliseLocation(opts.location_input) + " " + opts.section_name + ":",
-                    opts.return_text,
-                    'Wazimap USSD: *120*8864*1601#',
-                    'www.wazimap.co.za'
-                ].join('\n'),
-            })
-            .then(function() {
-                return self.states.create(
-                    'states:end');
-            });
-        });
-
-        self.states.add('states:randomLocation', function(name) {
-            return new EndState(name, {
-                text: 'Random locations coming soon!',
-                next: 'states:start'
-            });
-        });
-
-        self.states.add('states:end', function(name) {
-            return new EndState(name, {
-                text: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za',
-                next: 'states:start'
-            });
-        });
+        };      
     });
 
     return {

@@ -67,7 +67,6 @@ module.exports = function() {
         "response": {
             "code": 200,
             "data": {
-
                 "results": [
                 {
                     "geo_code": "19100064", 
