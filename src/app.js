@@ -215,7 +215,7 @@ go.app = function() {
 
 //functions for accessing data per sub-section
 
-function sub_section(data, section_id) {
+        function sub_section(data, section_id) {
             return sub_section[section_id](data);
         }
 

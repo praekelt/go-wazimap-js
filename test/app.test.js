@@ -496,10 +496,11 @@ describe("app", function() {
             it("should return the new section", function() {
                 return tester 
                 .setup.user.state('states:retrieve-location', {
-                    creator_opts: { full_geoid : 'ward-19100064', 
-                                    full_name : 'Ward 64 (19100064), City of Cape Town, Western Cape', 
-                                    location_input: 'fish hoek'
-                                  }
+                    creator_opts: { 
+                        full_geoid : 'ward-19100064', 
+                        full_name : 'Ward 64 (19100064), City of Cape Town, Western Cape', 
+                        location_input: 'fish hoek'
+                    }
                 })
                 .inputs('1','2','2')
                 .check.interaction({
