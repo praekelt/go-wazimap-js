@@ -423,7 +423,7 @@ describe("app", function() {
                             '2. Provincial Voting Results',
                             '3. National Voting Results',
                             '4. % Employed',
-                            '5. Education',
+                            '5. Education- Matric',
                             '6. Most Spoken Language',
                             '7. More'
                         ].join('\n')                    
@@ -440,13 +440,12 @@ describe("app", function() {
                         reply: [
                             'Provincial Data on:',
                             '1. Citizenship',
-                            '2. Median Age',
-                            '3. Water Access',
-                            '4. Electricity Access',
-                            '5. Flush/Chemical Toilet Access',
-                            '6. Internet Access',
-                            '7. More',
-                            '8. Back'
+                            '2. Water Access',
+                            '3. Electricity Access',
+                            '4. Flush/Chemical Toilet Access',
+                            '5. Household Internet Access',
+                            '6. More',
+                            '7. Back'
                         ].join('\n')
                     })
                     .run();
@@ -455,14 +454,14 @@ describe("app", function() {
             it("should return page 3 of options to query", function() {
                 return tester
                     .setup.user.state('states:start')
-                    .inputs('2', '7', '7')
+                    .inputs('2', '7', '6')
                     .check.interaction({
                         state: 'states:provincial-data',
                         reply: [
                             'Provincial Data on:',
                             '1. Average Monthly Individual Income',
                             '2. Average Annual Household Income',
-                            '3. Woman as Head of Household',
+                            '3. Woman Head of Household',
                             '4. More',
                             '5. Back'
                         ].join('\n')
@@ -473,12 +472,12 @@ describe("app", function() {
             it("should return page 4 of options to query", function() {
                 return tester
                     .setup.user.state('states:start')
-                    .inputs('2', '7', '7', '4')
+                    .inputs('2', '7', '6', '4')
                     .check.interaction({
                         state: 'states:provincial-data',
                         reply: [
                             'Provincial Data on:',
-                            '1. Child-headed Households',
+                            '1. Total Child-headed Households',
                             '2. % Informal Dwellings',
                             '3. Back'
                         ].join('\n')
@@ -512,6 +511,26 @@ describe("app", function() {
                     state: 'states:display-data',
                     reply: [
                         'You have chosen to query Elections in Fish Hoek',
+                        '1. SMS details to me',
+                        '2. Query another section',
+                        '3. Main Menu',
+                        '4. Exit'
+                    ].join('\n')
+                })
+                .run();
+            });
+        });
+
+
+        describe("When a user chooses to query Population provincial data", function() {
+            it("Should display the provincial data in sms form", function() {
+                return tester
+                .setup.user.state('states:start')
+                .inputs('2', '1')
+                .check.interaction({
+                    state: 'states:display-province-data',
+                    reply: [
+                        'You have chosen to query provincial data on Population',
                         '1. SMS details to me',
                         '2. Query another section',
                         '3. Main Menu',
