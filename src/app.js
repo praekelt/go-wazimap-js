@@ -376,6 +376,24 @@ go.app = function() {
             });
         });
 
+
+// var section_data = opts.opts_data[opts.section_id]; 
+//             var return_text = sub_section(section_data, opts.section_id);
+        self.states.add('states:provincial', function(name, opts) {
+            var province = ['province-EC', 'province-FS', 'province-GT', 'province-KZN', 'province-LIM', 'province-MP', 'province-NW', 'province-NC', 'province-WC'];
+            var x;
+            for (x in province) {
+                return self
+                    .http.get('http://wazimap.co.za/profiles/' + province + '.json')
+                    .then(function(response) {
+                        var c =  response.data;
+                        // opts.data = response.data;
+                        // return  self.states.create(
+                        //     'states:select-section', opts, opts.location_input);
+                    });
+            }
+        });
+
         function provincial_data(data){
             if (data === 'population') {
                 return [
