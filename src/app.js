@@ -165,8 +165,7 @@ go.app = function() {
                             creator_opts: {
                                 location_input: opts.location_input,
                                 return_text : return_text,
-                                section_name : opts.section_name,
-                                location_id : opts.location_id 
+                                section_name : opts.section_name
                             }
                         };
                     }
