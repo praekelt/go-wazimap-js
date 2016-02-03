@@ -331,7 +331,6 @@ go.app = function() {
         sub_section.demographics = function(data) {
             return [
                 "Area population: " + data.total_population.values.this,
-                "People/square km: " + data.population_density.values.this,
                 "RSA Citizens: " + data.citizenship_south_african.values.this + "%",
                 "Female (" + data.sex_ratio.Female.values.this + "%) Male (" + data.sex_ratio.Male.values.this + "%)",
                 "Black African (" + data.population_group_distribution['Black African'].values.this + "%) Coloured (" + data.population_group_distribution.Coloured.values.this + "%) Indian/Asian (" + data.population_group_distribution['Indian or Asian'].values.this + "%) White (" + data.population_group_distribution.White.values.this + "%)", 
