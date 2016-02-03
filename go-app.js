@@ -23,12 +23,6 @@ go.app = function() {
         self.init = function() {            
             self.http = new JsonApi(self.im);       
         };
-
-        function capitaliseLocation(string) {
-            return string.replace(/\w\S*/g, function(s){
-                return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
-            });
-        }
         
         self.states.add('states:start', function(name) {
             return new ChoiceState(name, {
@@ -149,6 +143,161 @@ go.app = function() {
             });
         });
 
+        self.states.add('states:display-data', function(name, opts) {
+            var section_data = opts.opts_data[opts.section_id]; 
+            var return_text = sub_section(section_data, opts.section_id);
+            
+            return new ChoiceState(name, {
+                question: 'You have chosen to query ' + opts.section_name + ' in ' + capitaliseLocation(opts.location_input),
+
+                choices: [
+                    new Choice('states:sms', 'SMS details to me'),
+                    new Choice('states:select-section', 'Query another section'),
+                    new Choice('states:start', 'Main Menu'),
+                    new Choice('states:end', 'Exit')],
+
+                next: function(choice) {
+                    if (choice.value == 'states:start' || choice.value == 'states:end') {
+                        return choice.value;
+                    } else if (choice.value == 'states:select-section'){
+                        return {
+                            name: choice.value,
+                            creator_opts: {
+                                section_id : opts.section_id,
+                                section_data : section_data
+                            }
+                        };
+                    } else if (choice.value == "states:sms") {
+                        return {
+                            name: choice.value,
+                            creator_opts: {
+                                location_input: opts.location_input,
+                                return_text : return_text,
+                                section_name : opts.section_name,
+                                location_id : opts.location_id 
+                            }
+                        };
+                    }
+                }
+            });
+        });
+
+        self.states.add('states:provincial-data', function(name) {
+            return new PaginatedChoiceState(name, {
+                question: 'Provincial Data on:',
+                choices: [
+                    new Choice('demographics', 'Population'),
+                    new Choice('elections', 'Provincial Voting Results'),
+                    new Choice('elections', 'National Voting Results'),
+                    new Choice('economics', '% Employed'),
+                    new Choice('education', 'Education- Matric'),
+                    new Choice('demographics', 'Most Spoken Language'),
+                    new Choice('demographics', 'Citizenship'),
+                    new Choice('service_delivery', 'Water Access'),
+                    new Choice('service_delivery', 'Electricity Access'),
+                    new Choice('service_delivery', 'Flush/Chemical Toilet Access'),
+                    new Choice('economics', 'Household Internet Access'),
+                    new Choice('economics', 'Average Monthly Individual Income'),
+                    new Choice('households', 'Average Annual Household Income'),
+                    new Choice('households', 'Woman Head of Household'),
+                    new Choice('child_households', 'Total Child-headed Households'),
+                    new Choice('households', '% Informal Dwellings')
+                ],
+                options_per_page : null,
+                more: 'More',
+                back: 'Back',
+                next: function(choice) {
+                    return {
+                        name: 'states:display-province-data',
+                        creator_opts : {
+                            section_name : choice.label,
+                            section_id : choice.value,
+                        }
+                    };
+                }
+            });
+        });
+
+        self.states.add('states:display-province-data', function(name, opts) {
+            return new ChoiceState(name, {
+                question: 'You have chosen to query provincial data on ' + opts.section_name,
+
+                choices: [
+                    new Choice('states:provincial-sms', 'SMS details to me'),
+                    new Choice('states:provincial-data', 'Query another section'),
+                    new Choice('states:start', 'Main Menu'),                        
+                    new Choice('states:end', 'Exit')],
+
+                next: function(choice) {
+                    if (choice.value == 'states:start' || choice.value == 'states:end' || choice.value == 'states:provincial-data') {
+                        return choice.value;
+                    } else if (choice.value == "states:provincial-sms") {
+                        return {
+                            name: choice.value,
+                            creator_opts: {
+                                section_name : opts.section_name,
+                                section_id : opts.section_id,
+                            }
+                        };
+                    }
+                }
+            });
+        });
+
+        self.states.add('states:provincial-sms', function(name, opts) {
+            return getProvinceData(opts.section_id)
+            .then(function(prov_result) {
+                return self.im
+                    .outbound.send_to_user({
+                        endpoint: 'sms',
+                        content: [
+                            opts.section_name + ":",
+                            prov_result,
+                            'Wazimap USSD: *120*8864*1601#',
+                            'www.wazimap.co.za'
+                        ].join('\n'),
+                    })
+            .then(function() {
+                return self.states.create(
+                    'states:end');
+            });
+            });
+        });
+
+        self.states.add('states:sms', function(name, opts) {
+            return self.im
+                .outbound.send_to_user({
+                endpoint: 'sms',
+                content: [
+                    capitaliseLocation(opts.location_input) + " " + opts.section_name + ":",
+                    opts.return_text,
+                    'Wazimap USSD: *120*8864*1601#',
+                    'www.wazimap.co.za'
+                ].join('\n'),
+            })
+            .then(function() {
+                return self.states.create(
+                    'states:end');
+            });
+        });
+
+        self.states.add('states:end', function(name) {
+            return new EndState(name, {
+                text: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za',
+                next: 'states:start'
+            });
+        });
+
+//function for capitalising location names
+
+        function capitaliseLocation(string) {
+            return string.replace(/\w\S*/g, function(s){
+                return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
+            });
+        }
+
+//functions for accessing data per sub-section
+
         function sub_section(data, section_id) {
             return sub_section[section_id](data);
         }
@@ -266,123 +415,7 @@ go.app = function() {
             ].join("\n");
         };
 
-        self.states.add('states:display-data', function(name, opts) {
-            var section_data = opts.opts_data[opts.section_id]; 
-            var return_text = sub_section(section_data, opts.section_id);
-            
-            return new ChoiceState(name, {
-                question: 'You have chosen to query ' + opts.section_name + ' in ' + capitaliseLocation(opts.location_input),
-
-                choices: [
-                    new Choice('states:sms', 'SMS details to me'),
-                    new Choice('states:select-section', 'Query another section'),
-                    new Choice('states:start', 'Main Menu'),
-                    new Choice('states:end', 'Exit')],
-
-                next: function(choice) {
-                    if (choice.value == 'states:start' || choice.value == 'states:end') {
-                        return choice.value;
-                    } else if (choice.value == 'states:select-section'){
-                        return {
-                            name: choice.value,
-                            creator_opts: {
-                                section_id : opts.section_id,
-                                section_data : section_data
-                            }
-                        };
-                    } else if (choice.value == "states:sms") {
-                        return {
-                            name: choice.value,
-                            creator_opts: {
-                                location_input: opts.location_input,
-                                return_text : return_text,
-                                section_name : opts.section_name,
-                                location_id : opts.location_id 
-                            }
-                        };
-                    }
-                }
-            });
-        });
-
-        self.states.add('states:sms', function(name, opts) {
-            return self.im
-                .outbound.send_to_user({
-                endpoint: 'sms',
-                content: [
-                    capitaliseLocation(opts.location_input) + " " + opts.section_name + ":",
-                    opts.return_text,
-                    'Wazimap USSD: *120*8864*1601#',
-                    'www.wazimap.co.za'
-                ].join('\n'),
-            })
-            .then(function() {
-                return self.states.create(
-                    'states:end');
-            });
-        });
-
-        self.states.add('states:provincial-data', function(name) {
-            return new PaginatedChoiceState(name, {
-                question: 'Provincial Data on:',
-                choices: [
-                    new Choice('demographics', 'Population'),
-                    new Choice('elections', 'Provincial Voting Results'),
-                    new Choice('elections', 'National Voting Results'),
-                    new Choice('economics', '% Employed'),
-                    new Choice('education', 'Education- Matric'),
-                    new Choice('demographics', 'Most Spoken Language'),
-                    new Choice('demographics', 'Citizenship'),
-                    new Choice('service_delivery', 'Water Access'),
-                    new Choice('service_delivery', 'Electricity Access'),
-                    new Choice('service_delivery', 'Flush/Chemical Toilet Access'),
-                    new Choice('economics', 'Household Internet Access'),
-                    new Choice('economics', 'Average Monthly Individual Income'),
-                    new Choice('households', 'Average Annual Household Income'),
-                    new Choice('households', 'Woman Head of Household'),
-                    new Choice('child_households', 'Total Child-headed Households'),
-                    new Choice('households', '% Informal Dwellings')
-                ],
-                options_per_page : null,
-                more: 'More',
-                back: 'Back',
-                next: function(choice) {
-                    return {
-                        name: 'states:display-province-data',
-                        creator_opts : {
-                            section_name : choice.label,
-                            section_id : choice.value,
-                        }
-                    };
-                }
-            });
-        });
-
-        self.states.add('states:display-province-data', function(name, opts) {
-            return new ChoiceState(name, {
-                question: 'You have chosen to query provincial data on ' + opts.section_name,
-
-                choices: [
-                    new Choice('states:provincial-sms', 'SMS details to me'),
-                    new Choice('states:provincial-data', 'Query another section'),
-                    new Choice('states:start', 'Main Menu'),                        
-                    new Choice('states:end', 'Exit')],
-
-                next: function(choice) {
-                    if (choice.value == 'states:start' || choice.value == 'states:end' || choice.value == 'states:provincial-data') {
-                        return choice.value;
-                    } else if (choice.value == "states:provincial-sms") {
-                        return {
-                            name: choice.value,
-                            creator_opts: {
-                                section_name : opts.section_name,
-                                section_id : opts.section_id,
-                            }
-                        };
-                    }
-                }
-            });
-        });
+//function for getting provincial results
 
         function getHttp(province_code, section_id) {
             return self
@@ -391,6 +424,8 @@ go.app = function() {
                     return response.data[section_id];
                 });
         }
+
+//function for looping through provinces to return section data
 
         function getProvinceData(section_id) {
             var province_codes = ['province-GT', 'province-MP', 'province-LIM', 'province-NW', 'province-KZN', 'province-FS', 'province-EC', 'province-NC', 'province-WC'];
@@ -409,6 +444,8 @@ go.app = function() {
                     return texts.join("\n");
                 });
         }
+
+//functions for fetching specific section data
 
         function provincial_section(data, section_id) {
             return provincial_section[section_id](data);
@@ -492,34 +529,7 @@ go.app = function() {
 
         provincial_section.households = function(data) {
             return data.informal.values.this + "%";
-        };
-
-        self.states.add('states:provincial-sms', function(name, opts) {
-            return getProvinceData(opts.section_id)
-            .then(function(prov_result) {
-                return self.im
-                    .outbound.send_to_user({
-                        endpoint: 'sms',
-                        content: [
-                            opts.section_name + ":",
-                            prov_result,
-                            'Wazimap USSD: *120*8864*1601#',
-                            'www.wazimap.co.za'
-                        ].join('\n'),
-                    })
-            .then(function() {
-                return self.states.create(
-                    'states:end');
-            });
-            });
-        });
-
-        self.states.add('states:end', function(name) {
-            return new EndState(name, {
-                text: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za',
-                next: 'states:start'
-            });
-        });
+        };     
     });
 
     return {
