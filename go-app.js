@@ -151,7 +151,7 @@ go.app = function() {
                 question: 'You have chosen to query ' + opts.section_name + ' in ' + capitaliseLocation(opts.location_input),
 
                 choices: [
-                    new Choice('states:sms', 'SMS details to me'),
+                    new Choice('states:location-sms', 'SMS details to me'),
                     new Choice('states:select-section', 'Query another section'),
                     new Choice('states:start', 'Main Menu'),
                     new Choice('states:end', 'Exit')],
@@ -167,14 +167,13 @@ go.app = function() {
                                 section_data : section_data
                             }
                         };
-                    } else if (choice.value == "states:sms") {
+                    } else if (choice.value == "states:location-sms") {
                         return {
                             name: choice.value,
                             creator_opts: {
                                 location_input: opts.location_input,
                                 return_text : return_text,
                                 section_name : opts.section_name,
-                                location_id : opts.location_id 
                             }
                         };
                     }
@@ -245,7 +244,7 @@ go.app = function() {
         });
 
         self.states.add('states:provincial-sms', function(name, opts) {
-            return getProvinceData(opts.section_id)
+            return getProvinceData(opts.section_id, opts.section_name)
             .then(function(prov_result) {
                 return self.im
                     .outbound.send_to_user({
@@ -264,7 +263,7 @@ go.app = function() {
             });
         });
 
-        self.states.add('states:sms', function(name, opts) {
+        self.states.add('states:location-sms', function(name, opts) {
             return self.im
                 .outbound.send_to_user({
                 endpoint: 'sms',
@@ -342,7 +341,6 @@ go.app = function() {
                 "RSA Citizens: " + data.citizenship_south_african.values.this + "%",
                 "Female (" + data.sex_ratio.Female.values.this + "%) Male (" + data.sex_ratio.Male.values.this + "%)",
                 "Black African (" + data.population_group_distribution['Black African'].values.this + "%) Coloured (" + data.population_group_distribution.Coloured.values.this + "%) Indian/Asian (" + data.population_group_distribution['Indian or Asian'].values.this + "%) White (" + data.population_group_distribution.White.values.this + "%)", 
-                //"Most spoken language: " + data.language_most_spoken.name,
                 "Afrikaans (" + data.language_distribution.Afrikaans.values.this + "%) English (" + data.language_distribution.English.values.this + "%) IsiXhosa (" + data.language_distribution.IsiXhosa.values.this + "%) IsiZulu (" + data.language_distribution.IsiZulu.values.this + "%)",
                 "Age: <18 (" + data.age_category_distribution['Under 18'].values.this + "%) 18-64 (" + data.age_category_distribution["18 to 64"].values.this + "%) 65+ (" + data.age_category_distribution["65 and over"].values.this + "%)",
                 "Born in RSA: " + data.born_in_south_africa.values.this + "%"
@@ -427,7 +425,7 @@ go.app = function() {
 
 //function for looping through provinces to return section data
 
-        function getProvinceData(section_id) {
+        function getProvinceData(section_id, section_name) {
             var province_codes = ['province-GT', 'province-MP', 'province-LIM', 'province-NW', 'province-KZN', 'province-FS', 'province-EC', 'province-NC', 'province-WC'];
             var provinces = ['Gauteng', 'Mpumalanga', 'Limpopo', 'North-West', 'Kwazulu-Natal', 'Free State', 'Eastern Cape', 'Northern Cape', 'Western Cape'];
             
@@ -438,7 +436,7 @@ go.app = function() {
             return Q.all(requests)
                 .then(function (results) {
                     var texts = _.map(results, function(result, i) {
-                        section_text = provincial_section(result, section_id);
+                        section_text = provincial_section(result, section_id, section_name);
                         return provinces[i] + ": " + section_text;
                     });
                     return texts.join("\n");
@@ -447,89 +445,83 @@ go.app = function() {
 
 //functions for fetching specific section data
 
-        function provincial_section(data, section_id) {
-            return provincial_section[section_id](data);
+        function provincial_section(data, section_id, section_name) {
+            return provincial_section[section_id](data, section_name);
         }
 
-        provincial_section.demographics = function(data) {
-            return data.total_population.values.this;
+        provincial_section.demographics = function(data, section_name) {
+            if (section_name === 'Population') {
+                return data.total_population.values.this;
+            }
+            else if (section_name === 'Most Spoken Language') {
+                return data.language_most_spoken.name;
+            }
+            else if (section_name === 'Citizenship') {
+                return data.citizenship_south_african.values.this + "%";
+            }
         };
         
-        provincial_section.elections = function(data) {
-            var provincial_parties =_(data.provincial_2014.party_distribution)
-            .omit('metadata')
-            .sortBy(function(o) { return -o.values.this; })
-            .slice(0, 1)
-            .value();
-            var provincial_party_results = _.map(provincial_parties, function(s) {
-                return (" " + s.name + " " + s.values.this + "%").toString();
-            });
-            return provincial_party_results; 
+        provincial_section.elections = function(data, section_name) {
+            if (section_name === 'Provincial Voting Results') {
+                var provincial_parties =_(data.provincial_2014.party_distribution)
+                .omit('metadata')
+                .sortBy(function(o) { return -o.values.this; })
+                .slice(0, 1)
+                .value();
+                var provincial_party_results = _.map(provincial_parties, function(s) {
+                    return (" " + s.name + " " + s.values.this + "%").toString();
+                });
+                return provincial_party_results;
+            } else if (section_name === 'National Voting Results') {
+                var national_parties =_(data.national_2014.party_distribution)
+                .omit('metadata')
+                .sortBy(function(o) { return -o.values.this; })
+                .slice(0, 1)
+                .value();
+                var national_party_results = _.map(national_parties, function(s) {
+                    return (" " + s.name + " " + s.values.this + "%").toString();
+                });
+                return national_party_results; 
+            } 
         };
 
-        provincial_section.elections = function(data) {
-            var national_parties =_(data.national_2014.party_distribution)
-            .omit('metadata')
-            .sortBy(function(o) { return -o.values.this; })
-            .slice(0, 1)
-            .value();
-            var national_party_results = _.map(national_parties, function(s) {
-                return (" " + s.name + " " + s.values.this + "%").toString();
-            });
-            return national_party_results; 
+        provincial_section.economics = function(data, section_name) {
+            if (section_name === '% Employed') {
+                return data.employment_status.Employed.values.this + "%";
+            } else if (section_name === 'Household Internet Access') {
+                return data.internet_access.values.this + "%";
+            } else if (section_name === 'Average Monthly Individual Income') {
+                return "R" + data.median_individual_income.values.this;
+            }
         };
 
-        provincial_section.economics = function(data) {
-            return data.employment_status.Employed.values.this + "%";
-        };
-
-        provincial_section.education = function(data) {
+        provincial_section.education = function(data, section_name) {
             return data.educational_attainment_distribution['Grade 12 (Matric)'].values.this + "%";
         };
 
-        provincial_section.demographics = function(data) {
-            return data.language_most_spoken.name;
+        provincial_section.service_delivery = function(data, section_name) {
+            if (section_name === 'Water Access') {
+                return data.percentage_water_from_service_provider.values.this + "%";
+            } else if (section_name === "Electricity Access") {
+                return data.percentage_electricity_access.values.this + "%";
+            } else if (section_name === "Flush/Chemical Toilet Access") {
+                return data.percentage_flush_toilet_access.values.this + "%";
+            }
         };
 
-        provincial_section.demographics = function(data) {
-            return data.citizenship_south_african.values.this + "%";
+        provincial_section.households = function(data, section_name) {
+            if (section_name === 'Average Annual Household Income') {
+                return "R" + data.median_annual_income.values.this; 
+            } else if (section_name === 'Woman Head of Household') {
+                return  data.head_of_household.female.values.this + "%";
+            } else if (section_name === '% Informal Dwellings') {
+                return data.informal.values.this + "%";
+            }
         };
 
-        provincial_section.service_delivery = function(data) {
-            return data.percentage_water_from_service_provider.values.this + "%";
-        };
-
-        provincial_section.service_delivery = function(data) {
-            return data.percentage_electricity_access.values.this + "%";
-        };
-
-        provincial_section.service_delivery = function(data) {
-            return data.percentage_flush_toilet_access.values.this + "%";
-        };
-
-        provincial_section.economics = function(data) {
-            return data.internet_access.values.this + "%";
-        };
-
-         provincial_section.economics = function(data) {
-            return "R" + data.median_individual_income.values.this;
-        };
-
-        provincial_section.households = function(data) {
-            return "R" + data.median_annual_income.values.this; 
-        };
-
-        provincial_section.households = function(data) {
-            return  data.head_of_household.female.values.this + "%";
-        };
-
-        provincial_section.child_households = function(data) {
+        provincial_section.child_households = function(data, section_name) {
             return data.total_households.values.this;
-        };
-
-        provincial_section.households = function(data) {
-            return data.informal.values.this + "%";
-        };     
+        };  
     });
 
     return {
