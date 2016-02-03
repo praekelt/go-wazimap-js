@@ -347,7 +347,8 @@ go.app = function() {
                 "Rented: " + data.tenure_distribution.Rented.values.this + "%",
                 "Median Annual Income: R" + data.median_annual_income.values.this,
                 "Total Households: " + data.total_households.values.this,
-                "Head of Household: <18 (" + data.head_of_household.under_18.values.this + "%) Female (" + data.head_of_household.female.values.this + "%)",
+                "Female Head of Household: " + data.head_of_household.female.values.this + "%",
+                "Households with Heads <18: " + data.head_of_household.under_18.values.this,
                 "Own car: " + data.household_goods.Car.values.this + "%"
             ].join("\n");
         };
@@ -392,7 +393,7 @@ go.app = function() {
                 "Female (" + data.demographics.gender_distribution.Female.values.this + "%) Male (" + data.demographics.gender_distribution.Male.values.this + "%)",
                 "Ages 5-17 in school: " + data.school.percent_school_attendance.values.this + "%",
                 "Ages 15-17 in labour force: " + data.employment.percent_in_labour_force.values.this + "%",
-                "Ave monthly income of employed: R" + data.employment.median_income.values.this
+                "Average monthly income: R" + data.employment.median_income.values.this
             ].join("\n");
         };
 
