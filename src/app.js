@@ -320,21 +320,21 @@ go.app = function() {
                 question: 'Provincial Data on:',
                 choices: [
                     new Choice('demographics', 'Population'),
-                    new Choice('p_voting_results', 'Provincial Voting Results'),
-                    new Choice('n_voting_results', 'National Voting Results'),
-                    new Choice('employed', '% Employed'),
+                    new Choice('elections', 'Provincial Voting Results'),
+                    new Choice('elections', 'National Voting Results'),
+                    new Choice('economics', '% Employed'),
                     new Choice('education', 'Education- Matric'),
-                    new Choice('language', 'Most Spoken Language'),
-                    new Choice('citizen', 'Citizenship'),
-                    new Choice('water', 'Water Access'),
-                    new Choice('electricity', 'Electricity Access'),
-                    new Choice('toilets', 'Flush/Chemical Toilet Access'),
-                    new Choice('internet', 'Household Internet Access'),
-                    new Choice('individual_income', 'Average Monthly Individual Income'),
-                    new Choice('house_income', 'Average Annual Household Income'),
-                    new Choice('household_head', 'Woman Head of Household'),
+                    new Choice('demographics', 'Most Spoken Language'),
+                    new Choice('demographics', 'Citizenship'),
+                    new Choice('service_delivery', 'Water Access'),
+                    new Choice('service_delivery', 'Electricity Access'),
+                    new Choice('service_delivery', 'Flush/Chemical Toilet Access'),
+                    new Choice('economics', 'Household Internet Access'),
+                    new Choice('economics', 'Average Monthly Individual Income'),
+                    new Choice('households', 'Average Annual Household Income'),
+                    new Choice('households', 'Woman Head of Household'),
                     new Choice('child_households', 'Total Child-headed Households'),
-                    new Choice('informal_house', '% Informal Dwellings')
+                    new Choice('households', '% Informal Dwellings')
                 ],
                 options_per_page : null,
                 more: 'More',
@@ -411,7 +411,7 @@ go.app = function() {
             return data.total_population.values.this;
         };
         
-        provincial_section.p_voting_results = function(data) {
+        provincial_section.elections = function(data) {
             var provincial_parties =_(data.provincial_2014.party_distribution)
             .omit('metadata')
             .sortBy(function(o) { return -o.values.this; })
@@ -423,7 +423,7 @@ go.app = function() {
             return provincial_party_results; 
         };
 
-        provincial_section.n_voting_results = function(data) {
+        provincial_section.elections = function(data) {
             var national_parties =_(data.national_2014.party_distribution)
             .omit('metadata')
             .sortBy(function(o) { return -o.values.this; })
@@ -435,7 +435,7 @@ go.app = function() {
             return national_party_results; 
         };
 
-        provincial_section.employed = function(data) {
+        provincial_section.economics = function(data) {
             return data.employment_status.Employed.values.this + "%";
         };
 
@@ -443,39 +443,39 @@ go.app = function() {
             return data.educational_attainment_distribution['Grade 12 (Matric)'].values.this + "%";
         };
 
-        provincial_section.language = function(data) {
+        provincial_section.demographics = function(data) {
             return data.language_most_spoken.name;
         };
 
-        provincial_section.citizen = function(data) {
+        provincial_section.demographics = function(data) {
             return data.citizenship_south_african.values.this + "%";
         };
 
-        provincial_section.water = function(data) {
+        provincial_section.service_delivery = function(data) {
             return data.percentage_water_from_service_provider.values.this + "%";
         };
 
-        provincial_section.electricity = function(data) {
+        provincial_section.service_delivery = function(data) {
             return data.percentage_electricity_access.values.this + "%";
         };
 
-        provincial_section.toilets = function(data) {
+        provincial_section.service_delivery = function(data) {
             return data.percentage_flush_toilet_access.values.this + "%";
         };
 
-        provincial_section.internet = function(data) {
+        provincial_section.economics = function(data) {
             return data.internet_access.values.this + "%";
         };
 
-         provincial_section.individual_income = function(data) {
+         provincial_section.economics = function(data) {
             return "R" + data.median_individual_income.values.this;
         };
 
-        provincial_section.house_income = function(data) {
+        provincial_section.households = function(data) {
             return "R" + data.median_annual_income.values.this; 
         };
 
-        provincial_section.household_head = function(data) {
+        provincial_section.households = function(data) {
             return  data.head_of_household.female.values.this + "%";
         };
 
@@ -483,7 +483,7 @@ go.app = function() {
             return data.total_households.values.this;
         };
 
-        provincial_section.informal_house = function(data) {
+        provincial_section.households = function(data) {
             return data.informal.values.this + "%";
         };
 
