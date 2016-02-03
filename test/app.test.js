@@ -540,30 +540,30 @@ describe("app", function() {
             });
         });
 
-        // describe("when a user chooses to query another section", function() {
-        //     it("should return the new section", function() {
-        //         return tester 
-        //         .setup.user.state('states:retrieve-location', {
-        //             creator_opts: { 
-        //                 full_geoid : 'ward-19100064', 
-        //                 full_name : 'Ward 64 (19100064), City of Cape Town, Western Cape', 
-        //                 location_input: 'fish hoek'
-        //             }
-        //         })
-        //         .inputs('1','2','2')
-        //         .check.interaction({
-        //             state: 'states:display-data',
-        //             reply: [
-        //                 'You have chosen to query Demographics in Fish Hoek',
-        //                 '1. SMS details to me',
-        //                 '2. Query another section',
-        //                 '3. Main Menu',
-        //                 '4. Exit'
-        //             ].join('\n')
-        //         })
-        //         .run();
-        //     });
-        // });
+        describe("when a user chooses to query another section", function() {
+            it("should return the new section", function() {
+                return tester 
+                .setup.user.state('states:retrieve-location', {
+                    creator_opts: { 
+                        full_geoid : 'ward-19100064', 
+                        full_name : 'Ward 64 (19100064), City of Cape Town, Western Cape', 
+                        location_input: 'fish hoek'
+                    }
+                })
+                .inputs('1','2','2')
+                .check.interaction({
+                    state: 'states:display-data',
+                    reply: [
+                        'You have chosen to query Demographics in Fish Hoek',
+                        '1. SMS details to me',
+                        '2. Query another section',
+                        '3. Main Menu',
+                        '4. Exit'
+                    ].join('\n')
+                })
+                .run();
+            });
+        });
 
         describe("when the user selects to receive provincial data on population via sms", function() {
             it("should send the user the query via sms", function() {

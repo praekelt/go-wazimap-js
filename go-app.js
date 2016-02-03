@@ -152,19 +152,20 @@ go.app = function() {
 
                 choices: [
                     new Choice('states:location-sms', 'SMS details to me'),
-                    new Choice('states:select-section', 'Query another section'),
+                    new Choice('states:retrieve-location', 'Query another section'),
                     new Choice('states:start', 'Main Menu'),
                     new Choice('states:end', 'Exit')],
 
                 next: function(choice) {
                     if (choice.value == 'states:start' || choice.value == 'states:end') {
                         return choice.value;
-                    } else if (choice.value == 'states:select-section'){
+                    } else if (choice.value == 'states:retrieve-location'){
                         return {
                             name: choice.value,
                             creator_opts: {
-                                section_id : opts.section_id,
-                                section_data : section_data
+                                full_geoid : opts.location_id,
+                                full_name: opts.location_name,
+                                location_input : opts.location_input
                             }
                         };
                     } else if (choice.value == "states:location-sms") {
