@@ -41,7 +41,7 @@ go.app = function() {
 
         self.states.add('states:location', function(name) {
             return new FreeText(name, {
-                question: 'Please enter a location on National, Provincial or Ward level to query:',
+                question: 'Please enter a location in South Africa to query:',
                 next: function(content) {
                     return self 
                     .http.get('http://wazimap.co.za/place-search/json/', {

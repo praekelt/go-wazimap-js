@@ -48,7 +48,7 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:location',
-                        reply: 'Please enter a location on National, Provincial or Ward level to query:'                       
+                        reply: 'Please enter a location in South Africa to query:'                       
                     })
                     .run();
             });
