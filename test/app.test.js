@@ -33,7 +33,7 @@ describe("app", function() {
                         reply: [
                             'Welcome to Wazimap! What would you like to do?',
                             '1. Enter a location to query',
-                            '2. Query Provincial Data',
+                            '2. Query provincial data',
                             '3. Exit'
                         ].join('\n')
                     })
@@ -423,7 +423,7 @@ describe("app", function() {
                             '2. Provincial Voting Results',
                             '3. National Voting Results',
                             '4. % Employed',
-                            '5. Education- Matric',
+                            '5. Education (Matric)',
                             '6. Most Spoken Language',
                             '7. More'
                         ].join('\n')                    
@@ -439,7 +439,7 @@ describe("app", function() {
                         state: 'states:provincial-data',
                         reply: [
                             'Provincial Data on:',
-                            '1. Citizenship',
+                            '1. RSA Citizenship',
                             '2. Water Access',
                             '3. Electricity Access',
                             '4. Flush/Chemical Toilet Access',

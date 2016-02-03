@@ -30,7 +30,7 @@ go.app = function() {
         
                 choices: [
                     new Choice('states:location', 'Enter a location to query'),
-                    new Choice ('states:provincial-data', 'Query Provincial Data'),
+                    new Choice ('states:provincial-data', 'Query provincial data'),
                     new Choice('states:end', 'Exit')],
 
                 next: function(choice) {
@@ -190,9 +190,9 @@ go.app = function() {
                     new Choice('elections', 'Provincial Voting Results'),
                     new Choice('elections', 'National Voting Results'),
                     new Choice('economics', '% Employed'),
-                    new Choice('education', 'Education- Matric'),
+                    new Choice('education', 'Education (Matric)'),
                     new Choice('demographics', 'Most Spoken Language'),
-                    new Choice('demographics', 'Citizenship'),
+                    new Choice('demographics', 'RSA Citizenship'),
                     new Choice('service_delivery', 'Water Access'),
                     new Choice('service_delivery', 'Electricity Access'),
                     new Choice('service_delivery', 'Flush/Chemical Toilet Access'),
@@ -397,7 +397,6 @@ go.app = function() {
                 "Child population: " + data.demographics.total_children.values.this,
                 "Children (<18): " + data.demographics.child_adult_distribution['Children (< 18)'].values.this + "%",
                 "Female (" + data.demographics.gender_distribution.Female.values.this + "%) Male (" + data.demographics.gender_distribution.Male.values.this + "%)",
-                "<14 with no living biological parents: " + data.demographics.percent_no_parent.values.this + "%",
                 "Ages 5-17 in school: " + data.school.percent_school_attendance.values.this + "%",
                 "Ages 15-17 in labour force: " + data.employment.percent_in_labour_force.values.this + "%",
                 "Ave monthly income of employed: R" + data.employment.median_income.values.this
@@ -456,7 +455,7 @@ go.app = function() {
             else if (section_name === 'Most Spoken Language') {
                 return data.language_most_spoken.name;
             }
-            else if (section_name === 'Citizenship') {
+            else if (section_name === 'RSA Citizenship') {
                 return data.citizenship_south_african.values.this + "%";
             }
         };
