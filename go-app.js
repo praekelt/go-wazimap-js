@@ -15,6 +15,7 @@ go.app = function() {
     var JsonApi = vumigo.http.api.JsonApi;
     var PaginatedChoiceState = vumigo.states.PaginatedChoiceState;
     var _ = require("lodash");
+    var Q = require("q");
 
     var GoApp = App.extend(function(self) {
         App.call(self, 'states:start');
@@ -325,8 +326,8 @@ go.app = function() {
             return new PaginatedChoiceState(name, {
                 question: 'Provincial Data on:',
                 choices: [
-                    new Choice('population', 'Population'),
-                    new Choice('p_voting_results', 'Provincial Voting Results'),
+                    new Choice('demographics', 'Population'),
+                    new Choice('elections.provincial_2014', 'Provincial Voting Results'),
                     new Choice('n_voting_results', 'National Voting Results'),
                     new Choice('employed', '% Employed'),
                     new Choice('education', 'Education- Matric'),
@@ -358,7 +359,6 @@ go.app = function() {
         });
 
         self.states.add('states:display-province-data', function(name, opts) {
-            console.log(getProvinceData(opts.section_id));
             return new ChoiceState(name, {
                 question: 'You have chosen to query provincial data on ' + opts.section_name,
 
@@ -377,7 +377,6 @@ go.app = function() {
                             creator_opts: {
                                 section_name : opts.section_name,
                                 section_id : opts.section_id,
-                                prov_result : getProvinceData(opts.section_id)
                             }
                         };
                     }
@@ -385,69 +384,42 @@ go.app = function() {
             });
         });
 
-        function getProvinceData(section_id) {
-            var province_code = ['province-GT', 'province-MP', 'province-LIM', 'province-NW', 'province-KZN', 'province-FS', 'province-EC', 'province-NC', 'province-WC'];
-            var province = ['Gauteng', 'Mpumalanga', 'Limpopo', 'North-West', 'Kwazulu-Natal', 'Free State', 'Eastern Cape', 'Northern Cape', 'Western Cape'];
-            var x;
-            var y = -1;
-            var section_result;
-            var section_text;
-            var result = "";
-
-            function getHttp(province_code) {
-                return self
-                    .http.get('http://wazimap.co.za/profiles/' + province_code + '.json')
-                    .then(function(response) {
-                        return response.data;
-                    });
-            }
-
-            for (x in province_code) {
-                y++;
-                section_result = getHttp(x);
-                section_text = provincial_section(section_result, section_id); 
-                result += (province[y] + " " + section_text).toString();  
-            }
-            return result;            
+        function getHttp(province_code, section_id) {
+            return self
+                .http.get('http://wazimap.co.za/profiles/' + province_code + '.json')
+                .then(function(response) {
+                    return response.data[section_id];
+                });
         }
 
-        // function province_results(results) {
-        //     return [
-        //             'Gauteng: ' + results,
-        //             'Mpumalanga: ' + results,
-        //             'Limpopo: ' + results,
-        //             'North-West: ' + results,
-        //             'Kwazulu-Natal: ' + results,
-        //             'Free State: ' + results,
-        //             'Eastern Cape: ' + results,
-        //             'Northern Cape: ' + resultss,
-        //             'Western Cape: ' + results
-        //         ].join('\n');
-        // }
+        function getProvinceData(section_id) {
+            var province_codes = ['province-GT', 'province-MP', 'province-LIM', 'province-NW', 'province-KZN', 'province-FS', 'province-EC', 'province-NC', 'province-WC'];
+            var provinces = ['Gauteng', 'Mpumalanga', 'Limpopo', 'North-West', 'Kwazulu-Natal', 'Free State', 'Eastern Cape', 'Northern Cape', 'Western Cape'];
+            
+            var requests = _.map(province_codes, function(code) {
+                return getHttp(code, section_id);
+            });
 
-
-//HELP HELP
-
-        // function sub_section(data, section_id) {
-        //     return sub_section[section_id](data);
-        // }
-            // var section_data = opts.opts_data[opts.section_id]; 
-            // var return_text = sub_section(section_data, opts.section_id);
-            // sub_section.demographics = function(data) {
-            //     return [
-//END OF HELP HELP
-
+            return Q.all(requests)
+                .then(function (results) {
+                    var texts = _.map(results, function(result, i) {
+                        section_text = provincial_section(result, section_id);
+                        return provinces[i] + ": " + section_text;
+                    });
+                    return texts.join("\n");
+                });
+        }
 
         function provincial_section(data, section_id) {
             return provincial_section[section_id](data);
         }
 
-        provincial_section.population = function(data) {
-            return data.total_population.values.this + '%';
+        provincial_section.demographics = function(data) {
+            return data.total_population.values.this;
         };
         
-        provincial_section.p_voting_results = function(data) {
-            var provincial_parties =_(data.provincial_2014.party_distribution)
+        provincial_section[elections.provincial_2014] = function(data) {
+            var provincial_parties =_(data.party_distribution)
             .omit('metadata')
             .sortBy(function(o) { return -o.values.this; })
             .slice(0, 1)
@@ -522,130 +494,23 @@ go.app = function() {
             return data.informal.values.this + "%";
         };
 
-//HARD CODING IS BAD
-        // function provincials_data(data){
-        //     if (data === 'population') {
-        //         return [
-        //             'South Africa: 51770561',
-        //             'Gauteng: 12272263',
-        //             'Mpumalanga: 4039939',
-        //             'Limpopo: 5404868',
-        //             'North-West: 3509953',
-        //             'Kwazulu-Natal: 10267300',
-        //             'Eastern Cape: 6562054',
-        //             'Northern Cape: 1145861',
-        //             'Western Cape: 5822734'
-        //         ].join('\n');
-        //     }
-        //     if (data === 'p_voting_results') {
-        //         return [
-        //             'Gauteng: 54% ANC',
-        //             'Mpumalanga: 4039939',
-        //             'Limpopo: 5404868',
-        //             'North-West: 3509953',
-        //             'Kwazulu-Natal: 10267300',
-        //             'Eastern Cape: 6562054',
-        //             'Northern Cape: 1145861',
-        //             'Western Cape: 5822734'
-        //         ].join('\n');
-        //     }
-        //     if (data === 'n_voting_results') {
-        //         return [
-        //             'South Africa: 62% ANC',
-        //             'Gauteng: 55% ANC',
-        //             'Mpumalanga: 4039939',
-        //             'Limpopo: 5404868',
-        //             'North-West: 3509953',
-        //             'Kwazulu-Natal: 10267300',
-        //             'Eastern Cape: 6562054',
-        //             'Northern Cape: 1145861',
-        //             'Western Cape: 5822734'
-        //         ].join('\n');
-        //     }
-        //     if (data === 'employment') {
-        //         return [
-        //             'South Africa: 38.9%',
-        //             'Gauteng: 50.6%',
-        //             'Mpumalanga: 4039939',
-        //             'Limpopo: 5404868',
-        //             'North-West: 3509953',
-        //             'Kwazulu-Natal: 10267300',
-        //             'Eastern Cape: 6562054',
-        //             'Northern Cape: 1145861',
-        //             'Western Cape: 5822734'
-        //         ].join('\n');
-        //     }
-        //     if (data === 'education') {
-        //         return [
-        //             'South Africa: Gr9+ (65.8%) Gr12+ (39.3%)',
-        //             'Gauteng: Gr9+ (77.3%) Gr12+ (50.8%)',
-        //             'Mpumalanga: 4039939',
-        //             'Limpopo: 5404868',
-        //             'North-West: 3509953',
-        //             'Kwazulu-Natal: 10267300',
-        //             'Eastern Cape: 6562054',
-        //             'Northern Cape: 1145861',
-        //             'Western Cape: 5822734'
-        //         ].join('\n');
-        //     }
-        //     if (data === 'language') {
-        //         return [
-        //             'South Africa: IsiZulu',
-        //             'Gauteng: IsiZulu',
-        //             'Mpumalanga: 4039939',
-        //             'Limpopo: 5404868',
-        //             'North-West: 3509953',
-        //             'Kwazulu-Natal: 10267300',
-        //             'Eastern Cape: 6562054',
-        //             'Northern Cape: 1145861',
-        //             'Western Cape: 5822734'
-        //         ].join('\n');
-        //     }
-        //     if (data === 'services') {
-        //         return [
-        //             'Water, Electricity, Flush Toilet Access',
-        //             'South Africa: W(76.9%) E(85.3%) T(59.3%)',
-        //             'Gauteng: W(93.5%) E(87.9%) T(87.3%)',
-        //             'Mpumalanga: 4039939',
-        //             'Limpopo: 5404868',
-        //             'North-West: 3509953',
-        //             'Kwazulu-Natal: 10267300',
-        //             'Eastern Cape: 6562054',
-        //             'Northern Cape: 1145861',
-        //             'Western Cape: 5822734'
-        //         ].join('\n');
-        //     }
-        //     if (data === 'house_income') {
-        //         return [
-        //             'South Africa: R29400',
-        //             'Gauteng: 12272263',
-        //             'Mpumalanga: 4039939',
-        //             'Limpopo: 5404868',
-        //             'North-West: 3509953',
-        //             'Kwazulu-Natal: 10267300',
-        //             'Eastern Cape: 6562054',
-        //             'Northern Cape: 1145861',
-        //             'Western Cape: 5822734'
-        //         ].join('\n');
-        //     }
-        // }
-//HARD CODING IS BAD AND IS ENDING
-
         self.states.add('states:provincial-sms', function(name, opts) {
-            console.log(opts.prov_result);
-            return self.im
-                .outbound.send_to_user({
-                endpoint: 'sms',
-                content: [
-                    opts.section_name + ":",
-                    opts.prov_result,
-                    'Wazimap USSD: *120*8864*1601#',
-                    'www.wazimap.co.za'
-                ].join('\n'),
-            })
+            return getProvinceData(opts.section_id)
+            .then(function(prov_result) {
+                return self.im
+                    .outbound.send_to_user({
+                        endpoint: 'sms',
+                        content: [
+                            opts.section_name + ":",
+                            prov_result,
+                            'Wazimap USSD: *120*8864*1601#',
+                            'www.wazimap.co.za'
+                        ].join('\n'),
+                    })
             .then(function() {
                 return self.states.create(
                     'states:end');
+            });
             });
         });
 

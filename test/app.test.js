@@ -523,7 +523,7 @@ describe("app", function() {
 
 
         describe("When a user chooses to query Population provincial data", function() {
-            it("Should display the provincial data in sms form", function() {
+            it("Should display the menu to display the provincial data in sms form", function() {
                 return tester
                 .setup.user.state('states:start')
                 .inputs('2', '1')
@@ -538,6 +538,40 @@ describe("app", function() {
                     ].join('\n')
                 })
                 .run();
+            });
+        });
+
+        describe("when the user selects to receive provincial data on population via sms", function() {
+            it("should send the user the query via sms", function() {
+                return tester
+                    .setup.user.state('states:start')
+                    .inputs('2', '1', '1')
+                    .check.interaction({
+                        state: 'states:end',
+                        reply: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za'
+                    })
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        var sms = smses[0];
+                        assert.equal(smses.length,1);
+                        assert.equal(sms.content, [
+                            'Population:',
+                            'Gauteng: 12272263',
+                            'Mpumalanga: 4039939',
+                            'Limpopo: 5404868',
+                            'North-West: 3509953',
+                            'Kwazulu-Natal: 10267300',
+                            'Free State: 2745591',
+                            'Eastern Cape: 6562054',
+                            'Northern Cape: 1145861',
+                            'Western Cape: 5822734',
+                            'Wazimap USSD: *120*8864*1601#',
+                            'www.wazimap.co.za'
+                        ].join('\n'));
+                    })
+                    .run();
             });
         });
     });
