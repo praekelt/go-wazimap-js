@@ -2,6 +2,7 @@ module.exports = function() {
     return [
 //Correctly entered location name returns results
     {
+        "repeatable": true,
         "request": {
             "method": "GET",
             "url": "http://wazimap.co.za/place-search/json/",
@@ -41,6 +42,7 @@ module.exports = function() {
     },
 //Incorrect location returns empty results
     {
+        "repeatable" : true,
         "request" : {
             "method": "GET",
             "url": "http://wazimap.co.za/place-search/json/",
@@ -57,6 +59,7 @@ module.exports = function() {
     },
 //Location spelt with Upper or Lower case return same results
     {
+        "repeatable":true,
         "request" : {
             "method": "GET",
             "url": "http://wazimap.co.za/place-search/json/",
@@ -67,7 +70,6 @@ module.exports = function() {
         "response": {
             "code": 200,
             "data": {
-
                 "results": [
                 {
                     "geo_code": "19100064", 
@@ -86,6 +88,7 @@ module.exports = function() {
     },
 //Location spelt with Upper or Lower case return correct ward results (test used to check that lower-case first letters are capitalised)
    {
+        "repeatable" : true,
         "request" : {
             "method": "GET",
             "url": "http://wazimap.co.za/profiles/ward-19100064.json"
@@ -99,6 +102,7 @@ module.exports = function() {
     },
 //Return correct sub-section data from json query 
     {
+        "repeatable": true,
         "request" : {
             "method": "GET",
             "url": "http://wazimap.co.za/profiles/ward-19100058.json"
