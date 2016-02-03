@@ -33,7 +33,7 @@ describe("app", function() {
                         reply: [
                             'Welcome to Wazimap! What would you like to do?',
                             '1. Enter a location to query',
-                            '2. Query a random location',
+                            '2. Query provincial data',
                             '3. Exit'
                         ].join('\n')
                     })
@@ -48,7 +48,7 @@ describe("app", function() {
                     .input('1')
                     .check.interaction({
                         state: 'states:location',
-                        reply: 'Please enter a location on National, Provincial or Ward level to query:'                       
+                        reply: 'Please enter a location in South Africa to query:'                       
                     })
                     .run();
             });
@@ -80,15 +80,15 @@ describe("app", function() {
                         .inputs('Claremnt', '1', 'Claremont')
                         .check.interaction({
                             state: 'states:results',
-                            reply: [
-                                'Select the location you would like to query:',
-                                '1. Ward 58 (19100058), City of Cape Town, Western Cape',
-                                '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal',
-                                '3. Next'
-                            ].join('\n')
-                        })
-                        .run(); 
-                });
+                                reply: [
+                                    'Select the location you would like to query:',
+                                    '1. Ward 58 (19100058), City of Cape Town, Western Cape',
+                                    '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal',
+                                    '3. Next'
+                                ].join('\n')
+                            })
+                            .run();
+                    });
 
                 it("should display page 2 of the correct location results", function() {
                     return tester
@@ -105,7 +105,6 @@ describe("app", function() {
                         })
                         .run();
                 });                
-
             });
         });
 
@@ -160,42 +159,6 @@ describe("app", function() {
                         ].join('\n')                       
                     })
                     .run();
-            });
-        });
-
-        describe("when a user enters an incorrect location, and then a valid location", function() {
-            describe("we want to show the results on multiple pages", function() {
-                it("should display page 1 of location results of the valid location", function() {
-                    return tester
-                        .setup.user.state('states:location')
-                        .inputs('Claremnt', '1', 'Claremont')
-                        .check.interaction({
-                            state: 'states:results',
-                                reply: [
-                                    'Select the location you would like to query:',
-                                    '1. Ward 58 (19100058), City of Cape Town, Western Cape',
-                                    '2. Ward 7 (52502007), Newcastle, KwaZulu-Natal',
-                                    '3. Next'
-                                ].join('\n')
-                            })
-                            .run();
-                    });
-
-                it("should display page 2 of location results", function() {
-                    return tester
-                        .setup.user.state('states:location')
-                        .inputs('Claremont', '3')
-                        .check.interaction({
-                            state: 'states:results',
-                            reply: [
-                                'Select the location you would like to query:',
-                                '1. Ward 82 (79800082), City of Johannesburg, Gauteng',
-                                '2. Ward 55 (79900055), City of Tshwane, Gauteng',
-                                '3. Back'
-                            ].join('\n')
-                        })
-                        .run();
-                });
             });
         });
 
@@ -446,18 +409,84 @@ describe("app", function() {
             });
         });
 
-     describe("when the user asks to query a random location", function() {
-            it("should return a random location with query data", function() {
+    describe("when the user asks to query provincial data", function() {
+        describe("we want to display the data using the PaginatedChoiceState", function() { 
+            it("should return page 1 of options to query", function() {
                 return tester
                     .setup.user.state('states:start')
                     .input('2')
                     .check.interaction({
-                        state: 'states:randomLocation',
-                        reply: 'Random locations coming soon!'                     
+                        state: 'states:provincial-data',
+                        reply: [
+                            'Provincial Data on:',
+                            '1. Population',
+                            '2. Provincial Voting Results',
+                            '3. National Voting Results',
+                            '4. % Employed',
+                            '5. Education (Matric)',
+                            '6. Most Spoken Language',
+                            '7. More'
+                        ].join('\n')                    
                     })
                     .run();
             });
+
+            it("should return page 2 of options to query", function() {
+                return tester
+                    .setup.user.state('states:start')
+                    .inputs('2', '7')
+                    .check.interaction({
+                        state: 'states:provincial-data',
+                        reply: [
+                            'Provincial Data on:',
+                            '1. RSA Citizenship',
+                            '2. Water Access',
+                            '3. Electricity Access',
+                            '4. Flush/Chemical Toilet Access',
+                            '5. Household Internet Access',
+                            '6. More',
+                            '7. Back'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+
+            it("should return page 3 of options to query", function() {
+                return tester
+                    .setup.user.state('states:start')
+                    .inputs('2', '7', '6')
+                    .check.interaction({
+                        state: 'states:provincial-data',
+                        reply: [
+                            'Provincial Data on:',
+                            '1. Average Monthly Individual Income',
+                            '2. Average Annual Household Income',
+                            '3. Woman Head of Household',
+                            '4. More',
+                            '5. Back'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+
+            it("should return page 4 of options to query", function() {
+                return tester
+                    .setup.user.state('states:start')
+                    .inputs('2', '7', '6', '4')
+                    .check.interaction({
+                        state: 'states:provincial-data',
+                        reply: [
+                            'Provincial Data on:',
+                            '1. Total Child-headed Households',
+                            '2. % Informal Dwellings',
+                            '3. Back'
+                        ].join('\n')
+                    })
+                    .run();
+            });
+
         });
+    });
 
         describe("when the user asks to exit", function() {
             it("should say good bye and end the session", function() {
@@ -492,6 +521,25 @@ describe("app", function() {
             });
         });
 
+        describe("When a user chooses to query Population provincial data", function() {
+            it("Should display the menu to display the provincial data in sms form", function() {
+                return tester
+                .setup.user.state('states:start')
+                .inputs('2', '1')
+                .check.interaction({
+                    state: 'states:display-province-data',
+                    reply: [
+                        'You have chosen to query provincial data on Population',
+                        '1. SMS details to me',
+                        '2. Query another section',
+                        '3. Main Menu',
+                        '4. Exit'
+                    ].join('\n')
+                })
+                .run();
+            });
+        });
+
         describe("when a user chooses to query another section", function() {
             it("should return the new section", function() {
                 return tester 
@@ -514,6 +562,40 @@ describe("app", function() {
                     ].join('\n')
                 })
                 .run();
+            });
+        });
+
+        describe("when the user selects to receive provincial data on population via sms", function() {
+            it("should send the user the query via sms", function() {
+                return tester
+                    .setup.user.state('states:start')
+                    .inputs('2', '1', '1')
+                    .check.interaction({
+                        state: 'states:end',
+                        reply: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za'
+                    })
+                    .check(function(api) {
+                        var smses = _.where(api.outbound.store, {
+                            endpoint: 'sms'
+                        });
+                        var sms = smses[0];
+                        assert.equal(smses.length,1);
+                        assert.equal(sms.content, [
+                            'Population:',
+                            'Gauteng: 12272263',
+                            'Mpumalanga: 4039939',
+                            'Limpopo: 5404868',
+                            'North-West: 3509953',
+                            'Kwazulu-Natal: 10267300',
+                            'Free State: 2745591',
+                            'Eastern Cape: 6562054',
+                            'Northern Cape: 1145861',
+                            'Western Cape: 5822734',
+                            'Wazimap USSD: *120*8864*1601#',
+                            'www.wazimap.co.za'
+                        ].join('\n'));
+                    })
+                    .run();
             });
         });
     });
