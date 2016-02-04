@@ -543,7 +543,7 @@ describe("app", function() {
         describe("when a user chooses to query another section", function() {
             it("should return the new section", function() {
                 return tester 
-                .setup.user.state('states:retrieve-location', {
+                .setup.user.state('states:select-section', {
                     creator_opts: { 
                         full_geoid : 'ward-19100064', 
                         full_name : 'Ward 64 (19100064), City of Cape Town, Western Cape', 

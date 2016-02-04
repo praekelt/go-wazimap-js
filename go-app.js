@@ -93,7 +93,7 @@ go.app = function() {
                 back: 'Back',
                 next: function(choice) {
                     return { 
-                        name: 'states:retrieve-location',
+                        name: 'states:select-section',
                         creator_opts : {
                             full_geoid : choice.value,
                             full_name : choice.label,
@@ -102,16 +102,6 @@ go.app = function() {
                     };
                 }   
             });
-        });
-
-        self.states.add('states:retrieve-location', function(name, opts) {
-            return self
-                .http.get('http://wazimap.co.za/profiles/' + opts.full_geoid + '.json')
-                .then(function(response) {
-                    opts.data = response.data;
-                    return  self.states.create(
-                        'states:select-section', opts, opts.location_input);
-                });
         });
 
         self.states.add('states:select-section', function(name, opts) {
@@ -133,7 +123,6 @@ go.app = function() {
                         creator_opts : {
                             section_name : choice.label,
                             section_id : choice.value,
-                            opts_data : opts.data,
                             location_name : opts.full_name,
                             location_id : opts.full_geoid,
                             location_input: opts.location_input
@@ -144,22 +133,20 @@ go.app = function() {
         });
 
         self.states.add('states:display-data', function(name, opts) {
-            var section_data = opts.opts_data[opts.section_id]; 
-            var return_text = sub_section(section_data, opts.section_id);
-            
+            var capital_location =  capitaliseLocation(opts.location_input);
             return new ChoiceState(name, {
-                question: 'You have chosen to query ' + opts.section_name + ' in ' + capitaliseLocation(opts.location_input),
+                question: 'You have chosen to query ' + opts.section_name + ' in ' + capital_location,
 
                 choices: [
-                    new Choice('states:location-sms', 'SMS details to me'),
-                    new Choice('states:retrieve-location', 'Query another section'),
+                    new Choice('states:retrieve-location', 'SMS details to me'),
+                    new Choice('states:select-section', 'Query another section'),
                     new Choice('states:start', 'Main Menu'),
                     new Choice('states:end', 'Exit')],
 
                 next: function(choice) {
                     if (choice.value == 'states:start' || choice.value == 'states:end') {
                         return choice.value;
-                    } else if (choice.value == 'states:retrieve-location'){
+                    } else if (choice.value == 'states:select-section'){
                         return {
                             name: choice.value,
                             creator_opts: {
@@ -168,17 +155,55 @@ go.app = function() {
                                 location_input : opts.location_input
                             }
                         };
-                    } else if (choice.value == "states:location-sms") {
+                    } else if (choice.value == "states:retrieve-location") {
                         return {
                             name: choice.value,
                             creator_opts: {
-                                location_input: opts.location_input,
-                                return_text : return_text,
+                                location_input: capital_location,
                                 section_name : opts.section_name,
+                                location_id : opts.location_id,
+                                location_name : opts.location_name,
+                                section_id : opts.section_id
                             }
                         };
                     }
                 }
+            });
+        });
+
+        self.states.add('states:retrieve-location', function(name, opts) {
+            return self
+                .http.get('http://wazimap.co.za/profiles/' + opts.location_id + '.json')
+                .then(function(response) {
+                    opts.data = response.data;
+                    return  self.states.create(
+                        'states:location-sms', opts, opts.location_input, opts.section_name);
+                });
+        });
+
+        self.states.add('states:location-sms', function(name, opts) {
+            var section_data = opts.data[opts.section_id]; 
+            var return_text = sub_section(section_data, opts.section_id);         
+            return self.im
+                .outbound.send_to_user({
+                    endpoint: 'sms',
+                    content: [
+                        opts.location_input + " " + opts.section_name + ":",
+                        return_text,
+                        'Wazimap USSD: *120*8864*1601#',
+                        'www.wazimap.co.za'
+                    ].join('\n'),
+                })
+                .then(function() {
+                    return self.states.create(
+                        'states:end');
+                });
+        });
+
+        self.states.add('states:end', function(name) {
+            return new EndState(name, {
+                text: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za',
+                next: 'states:start'
             });
         });
 
@@ -261,30 +286,6 @@ go.app = function() {
                 return self.states.create(
                     'states:end');
             });
-            });
-        });
-
-        self.states.add('states:location-sms', function(name, opts) {
-            return self.im
-                .outbound.send_to_user({
-                endpoint: 'sms',
-                content: [
-                    capitaliseLocation(opts.location_input) + " " + opts.section_name + ":",
-                    opts.return_text,
-                    'Wazimap USSD: *120*8864*1601#',
-                    'www.wazimap.co.za'
-                ].join('\n'),
-            })
-            .then(function() {
-                return self.states.create(
-                    'states:end');
-            });
-        });
-
-        self.states.add('states:end', function(name) {
-            return new EndState(name, {
-                text: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za',
-                next: 'states:start'
             });
         });
 
