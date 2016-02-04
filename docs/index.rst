@@ -13,8 +13,6 @@ Contents:
 
    project-outline.rst
 
-
-
 Indices and tables
 ==================
 
