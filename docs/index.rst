@@ -10,7 +10,7 @@ Contents:
 
 .. toctree::
    :maxdepth: 2
-
+   project-outline.rst
 
 
 Indices and tables
