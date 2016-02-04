@@ -29,6 +29,7 @@ import os
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'sphinxcontrib.autojs',
     'sphinx.ext.todo',
 ]
 
@@ -42,6 +43,9 @@ source_suffix = '.rst'
 
 # The encoding of source files.
 #source_encoding = 'utf-8-sig'
+
+#Primary Domain
+primary_domain = 'js'
 
 # The master toctree document.
 master_doc = 'index'
