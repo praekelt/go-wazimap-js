@@ -160,7 +160,6 @@ go.app = function() {
                             name: choice.value,
                             creator_opts: {
                                 location_input: capital_location,
-                              //  return_text : return_text,
                                 section_name : opts.section_name,
                                 location_id : opts.location_id,
                                 location_name : opts.location_name,
@@ -187,18 +186,18 @@ go.app = function() {
             var return_text = sub_section(section_data, opts.section_id);         
             return self.im
                 .outbound.send_to_user({
-                endpoint: 'sms',
-                content: [
-                    opts.location_input + " " + opts.section_name + ":",
-                    return_text,
-                    'Wazimap USSD: *120*8864*1601#',
-                    'www.wazimap.co.za'
-                ].join('\n'),
-            })
-            .then(function() {
-                return self.states.create(
-                    'states:end');
-            });
+                    endpoint: 'sms',
+                    content: [
+                        opts.location_input + " " + opts.section_name + ":",
+                        return_text,
+                        'Wazimap USSD: *120*8864*1601#',
+                        'www.wazimap.co.za'
+                    ].join('\n'),
+                })
+                .then(function() {
+                    return self.states.create(
+                        'states:end');
+                });
         });
 
         self.states.add('states:end', function(name) {
