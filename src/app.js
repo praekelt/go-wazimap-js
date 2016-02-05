@@ -295,6 +295,10 @@ go.app = function() {
                 return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
             });
         }
+        /**:function: capitaliseLocation(string)
+
+        Function capitalises first letter of word for cases where input is lower case. 
+        */
 
 //functions for accessing data per sub-section
 
