@@ -18,11 +18,8 @@ go.app = function() {
         };
         
         self.states.add('states:start', function(name) {
-            /**class:testing
+            /**:States: states:start
 
-            Is this working? 
-            :param string name:
-                this is my name
             */
             return new ChoiceState(name, {
                 question: 'Welcome to Wazimap! What would you like to do?',
@@ -39,6 +36,9 @@ go.app = function() {
         });
 
         self.states.add('states:location', function(name) {
+            /**:States: states:location
+
+            */
             return new FreeText(name, {
                 question: 'Please enter a location in South Africa to query:',
                 next: function(content) {
@@ -64,6 +64,9 @@ go.app = function() {
         });
 
         self.states.add('states:incorrect_location', function(name) {
+            /**:States: states:incorrect_location
+
+            */
             return new ChoiceState(name, {
                 question: 'Location not found. Would you like to:',
 
@@ -79,6 +82,9 @@ go.app = function() {
         });      
 
         self.states.add('states:results', function(name, opts) {
+            /**:States: states:results
+
+            */
             var location_choices = _.map(opts.locations, function(d) {
                 return new Choice(d.full_geoid, d.full_name);
             });
@@ -104,6 +110,9 @@ go.app = function() {
         });
 
         self.states.add('states:select-section', function(name, opts) {
+            /**:States: states:select-section
+
+            */
             return new ChoiceState(name, {
                 question: 'I would like to query:',
                 choices: [
@@ -132,6 +141,9 @@ go.app = function() {
         });
 
         self.states.add('states:display-data', function(name, opts) {
+            /**:States: states:display-data
+
+            */
             var capital_location =  capitaliseLocation(opts.location_input);
             return new ChoiceState(name, {
                 question: 'You have chosen to query ' + opts.section_name + ' in ' + capital_location,
@@ -171,6 +183,9 @@ go.app = function() {
         });
 
         self.states.add('states:retrieve-location', function(name, opts) {
+            /**:States: states:retrieve-location
+
+            */
             return self
                 .http.get('http://wazimap.co.za/profiles/' + opts.location_id + '.json')
                 .then(function(response) {
@@ -181,6 +196,9 @@ go.app = function() {
         });
 
         self.states.add('states:location-sms', function(name, opts) {
+            /**:States: states:location-sms
+
+            */
             var section_data = opts.data[opts.section_id]; 
             var return_text = sub_section(section_data, opts.section_id);         
             return self.im
@@ -200,6 +218,9 @@ go.app = function() {
         });
 
         self.states.add('states:end', function(name) {
+            /**:States: states:end
+
+            */
             return new EndState(name, {
                 text: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za',
                 next: 'states:start'
@@ -207,6 +228,9 @@ go.app = function() {
         });
 
         self.states.add('states:provincial-data', function(name) {
+            /**:States: states:provincial-data
+
+            */
             return new PaginatedChoiceState(name, {
                 question: 'Provincial Data on:',
                 choices: [
@@ -243,6 +267,9 @@ go.app = function() {
         });
 
         self.states.add('states:display-province-data', function(name, opts) {
+            /**:States: states:display-provincial-data
+
+            */
             return new ChoiceState(name, {
                 question: 'You have chosen to query provincial data on ' + opts.section_name,
 
@@ -269,6 +296,9 @@ go.app = function() {
         });
 
         self.states.add('states:provincial-sms', function(name, opts) {
+            /**:States: states:provincial-sms
+
+            */
             return getProvinceData(opts.section_id, opts.section_name)
             .then(function(prov_result) {
                 return self.im
@@ -288,10 +318,6 @@ go.app = function() {
             });
         });
 
-        /**
-        Functions
-        ---------
-        */
 //function for capitalising location names
 
         function capitaliseLocation(string) {
@@ -305,6 +331,16 @@ go.app = function() {
         */
 
 //functions for accessing data per sub-section
+
+        /**:function: sub_section(data, section)
+
+        Returns a subsection of data received from the json query for the relevant location.
+        We need to navigate through the json query to access specific results. 
+
+            eg. sub_section.demographics = function(data) {
+                    return "Population: " + data.total_population.values.this;
+                }
+        */
 
         function sub_section(data, section_id) {
             return sub_section[section_id](data);
@@ -423,6 +459,12 @@ go.app = function() {
 
 //function for getting provincial results
 
+        /**:function: getHttp(province_code, section_id) 
+
+            Returns json text of a specific Wazimap category for a chosen province.  
+            Province codes in the format "province-FS", "province-GT".
+        */
+
         function getHttp(province_code, section_id) {
             return self
                 .http.get('http://wazimap.co.za/profiles/' + province_code + '.json')
@@ -432,6 +474,10 @@ go.app = function() {
         }
 
 //function for looping through provinces to return section data
+
+        /**:function: getProvinceData(section_id, section_name)
+
+        */
 
         function getProvinceData(section_id, section_name) {
             var province_codes = ['province-GT', 'province-MP', 'province-LIM', 'province-NW', 'province-KZN', 'province-FS', 'province-EC', 'province-NC', 'province-WC'];
@@ -452,6 +498,10 @@ go.app = function() {
         }
 
 //functions for fetching specific section data
+
+        /**:function: provincial_section(data, section_id, section_name)
+
+        */
 
         function provincial_section(data, section_id, section_name) {
             return provincial_section[section_id](data, section_name);
