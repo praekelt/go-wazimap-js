@@ -543,7 +543,7 @@ go.app = function() {
                 Returns a subsection of data received from the json query for the relevant province.
                 We need to navigate through the json query to access specific results.::
 
-                    eg. sub_section.demographics = function(data) {
+                    eg. provincial_section.demographics = function(data) {
                             return "Population: " + data.total_population.values.this;
                         }    
         */
