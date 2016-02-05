@@ -12,7 +12,7 @@ Contents:
    :maxdepth: 2
 
    project-outline.rst
-   src/app.js
+   app.rst
 
 Indices and tables
 ==================
