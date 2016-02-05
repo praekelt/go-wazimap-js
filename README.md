@@ -1,5 +1,5 @@
 # go-wazimap-js
-# A USSD interface to the Wazimap API (www.wazimap.co.za) 
+A USSD interface to the Wazimap API (www.wazimap.co.za) 
 
 USSD Number (* 120 * 8864 * 1601 #)
 
