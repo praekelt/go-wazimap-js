@@ -20,8 +20,7 @@ go.app = function() {
         self.states.add('states:start', function(name) {
             /**:States: states:start
                     
-                    The initial state of Wazimap interactions. This loads a Main Menu environment for 
-                    the user with the option of navigating towards querying a specific location 
+                    The initial state of Wazimap interactions. This loads a Main Menu environment for the user with the option of navigating towards querying a specific location 
                     (states:location), provincial data (states:provincial-data), or exiting the 
                     application (states:end) using ChoiceState.
             */
@@ -47,9 +46,9 @@ go.app = function() {
 
                     The input is fed into a Wazimap URL and returns a list of json location 
                     results found in South Africa that match the input location (states:results) or
-                    returns (states:incorrect_location) if no matching location is found. 
+                    returns (states:incorrect_location) if no matching location is found.::
 
-                    Eg. http://wazimap.co.za/place-search/json/Claremont 
+                        Eg. http://wazimap.co.za/place-search/json/Claremont 
             */
             return new FreeText(name, {
                 question: 'Please enter a location in South Africa to query:',
@@ -373,11 +372,11 @@ go.app = function() {
         /**:function: sub_section(data, section)
 
                 Returns a subsection of data received from the json query for the relevant location.
-                We need to navigate through the json query to access specific results. 
+                We need to navigate through the json query to access specific results.::
 
                     eg. sub_section.demographics = function(data) {
-                        return "Population: " + data.total_population.values.this;
-                    }
+                            return "Population: " + data.total_population.values.this;
+                        }
         */
 
         function sub_section(data, section_id) {
