@@ -288,6 +288,10 @@ go.app = function() {
             });
         });
 
+        /**
+        Functions
+        ---------
+        */
 //function for capitalising location names
 
         function capitaliseLocation(string) {
