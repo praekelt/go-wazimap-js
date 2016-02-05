@@ -18,7 +18,11 @@ go.app = function() {
         };
         
         self.states.add('states:start', function(name) {
-            /** Testing testing
+            /**class:testing
+
+            Is this working? 
+            :param string name:
+                this is my name
             */
             return new ChoiceState(name, {
                 question: 'Welcome to Wazimap! What would you like to do?',
