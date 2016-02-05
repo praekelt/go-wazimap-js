@@ -18,6 +18,12 @@ go.app = function() {
         };
         
         self.states.add('states:start', function(name) {
+            /**:States: states:start
+                    
+                    The initial state of Wazimap interactions. This loads a Main Menu environment for the user with the option of navigating towards querying a specific location 
+                    (states:location), provincial data (states:provincial-data), or exiting the 
+                    application (states:end) using ChoiceState.
+            */
             return new ChoiceState(name, {
                 question: 'Welcome to Wazimap! What would you like to do?',
         
@@ -33,6 +39,17 @@ go.app = function() {
         });
 
         self.states.add('states:location', function(name) {
+            /**:States: states:location
+
+                    Asks the user to input a location on Ward, Provincial or National level
+                    using the FreeText State.
+
+                    The input is fed into a Wazimap URL and returns a list of json location 
+                    results found in South Africa that match the input location (states:results) or
+                    returns (states:incorrect_location) if no matching location is found.::
+
+                        Eg. http://wazimap.co.za/place-search/json/Claremont 
+            */
             return new FreeText(name, {
                 question: 'Please enter a location in South Africa to query:',
                 next: function(content) {
@@ -58,6 +75,12 @@ go.app = function() {
         });
 
         self.states.add('states:incorrect_location', function(name) {
+            /**:States: states:incorrect_location
+
+                    Returns options for the user to navigate to a new location entry 
+                    (states:location), Main Menu (states:start) or exit (states:end)
+                    the application.
+            */
             return new ChoiceState(name, {
                 question: 'Location not found. Would you like to:',
 
@@ -73,6 +96,11 @@ go.app = function() {
         });      
 
         self.states.add('states:results', function(name, opts) {
+            /**:States: states:results
+
+                    Returns a json list of location results using PaginatedChoiceState. 
+                    The user selects the location to query and then (states:select-section) is returned. 
+            */
             var location_choices = _.map(opts.locations, function(d) {
                 return new Choice(d.full_geoid, d.full_name);
             });
@@ -98,6 +126,10 @@ go.app = function() {
         });
 
         self.states.add('states:select-section', function(name, opts) {
+            /**:States: states:select-section
+                
+                    Returns Wazimap categories using ChoiceState. 
+            */
             return new ChoiceState(name, {
                 question: 'I would like to query:',
                 choices: [
@@ -126,6 +158,13 @@ go.app = function() {
         });
 
         self.states.add('states:display-data', function(name, opts) {
+            /**:States: states:display-data
+
+                    Returns confirmation of the location and category to query using ChoiceState. 
+                    User can choose to receive the data via sms (states:retrieve-location),
+                    query another section (states:select-section), navigate to Main Menu 
+                    (states:start) or exit (states:end)     
+            */
             var capital_location =  capitaliseLocation(opts.location_input);
             return new ChoiceState(name, {
                 question: 'You have chosen to query ' + opts.section_name + ' in ' + capital_location,
@@ -165,6 +204,11 @@ go.app = function() {
         });
 
         self.states.add('states:retrieve-location', function(name, opts) {
+            /**:States: states:retrieve-location
+                    
+                    Returns a delegator state that resturns json results for the 
+                    location chosen by the user. This navigates to (states:sms)
+            */
             return self
                 .http.get('http://wazimap.co.za/profiles/' + opts.location_id + '.json')
                 .then(function(response) {
@@ -175,6 +219,13 @@ go.app = function() {
         });
 
         self.states.add('states:location-sms', function(name, opts) {
+            /**:States: states:location-sms
+                    
+                    Selects the section of json data for the Wazimap category selected. 
+                    The sub_section functon then returns the specific results to be sent via sms. 
+
+                    An sms is sent and (states:end) is returned.
+            */
             var section_data = opts.data[opts.section_id]; 
             var return_text = sub_section(section_data, opts.section_id);         
             return self.im
@@ -194,6 +245,10 @@ go.app = function() {
         });
 
         self.states.add('states:end', function(name) {
+            /**:States: states:end
+                    
+                    Ends the application with a farewell message to the user. 
+            */
             return new EndState(name, {
                 text: 'Thank you for using Wazimap! Find more information on www.wazimap.co.za',
                 next: 'states:start'
@@ -201,6 +256,10 @@ go.app = function() {
         });
 
         self.states.add('states:provincial-data', function(name) {
+            /**:States: states:provincial-data
+
+                    Returns a PaginatedChoiceState of Wazimap for the user to query.
+            */
             return new PaginatedChoiceState(name, {
                 question: 'Provincial Data on:',
                 choices: [
@@ -237,6 +296,13 @@ go.app = function() {
         });
 
         self.states.add('states:display-province-data', function(name, opts) {
+            /**:States: states:display-provincial-data
+
+                    Returns confirmation of the category to query using ChoiceState. 
+                    User can choose to receive the data via sms (states:retrieve-location),
+                    query another section (states:provincial-data), navigate to Main Menu 
+                    (states:start) or exit (states:end)   
+            */
             return new ChoiceState(name, {
                 question: 'You have chosen to query provincial data on ' + opts.section_name,
 
@@ -263,6 +329,13 @@ go.app = function() {
         });
 
         self.states.add('states:provincial-sms', function(name, opts) {
+            /**:States: states:provincial-sms
+
+                    Returns the getProvinceData function which returns the Wazimap
+                    catetory per province.
+
+                    An sms is sent with the data and (states:end) is returned.
+            */
             return getProvinceData(opts.section_id, opts.section_name)
             .then(function(prov_result) {
                 return self.im
@@ -289,8 +362,22 @@ go.app = function() {
                 return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();
             });
         }
+        /**:function: capitaliseLocation(string)
+
+                Function capitalises first letter of word for cases where input is lower case. 
+        */
 
 //functions for accessing data per sub-section
+
+        /**:function: sub_section(data, section)
+
+                Returns a subsection of data received from the json query for the relevant location.
+                We need to navigate through the json query to access specific results.::
+
+                    eg. sub_section.demographics = function(data) {
+                            return "Population: " + data.total_population.values.this;
+                        }
+        */
 
         function sub_section(data, section_id) {
             return sub_section[section_id](data);
@@ -409,6 +496,12 @@ go.app = function() {
 
 //function for getting provincial results
 
+        /**:function: getHttp(province_code, section_id) 
+
+                Returns json text of a specific Wazimap category for a chosen province.  
+                Province codes in the format "province-FS", "province-GT".
+        */
+
         function getHttp(province_code, section_id) {
             return self
                 .http.get('http://wazimap.co.za/profiles/' + province_code + '.json')
@@ -418,6 +511,12 @@ go.app = function() {
         }
 
 //function for looping through provinces to return section data
+
+        /**:function: getProvinceData(section_id, section_name)
+
+                Lists the provincial codes and names. Calls the getHttp function and returns a 
+                promise of data for the catagory selected for all provinces queried.
+        */
 
         function getProvinceData(section_id, section_name) {
             var province_codes = ['province-GT', 'province-MP', 'province-LIM', 'province-NW', 'province-KZN', 'province-FS', 'province-EC', 'province-NC', 'province-WC'];
@@ -438,6 +537,16 @@ go.app = function() {
         }
 
 //functions for fetching specific section data
+
+        /**:function: provincial_section(data, section_id, section_name)
+                
+                Returns a subsection of data received from the json query for the relevant province.
+                We need to navigate through the json query to access specific results.::
+
+                    eg. provincial_section.demographics = function(data) {
+                            return "Population: " + data.total_population.values.this;
+                        }    
+        */
 
         function provincial_section(data, section_id, section_name) {
             return provincial_section[section_id](data, section_name);

@@ -14,6 +14,12 @@ Contents:
    project-outline.rst
    app.rst
 
+How to use the application
+=========================
+
+* Dial *120*8864*1601# from a mobile phone
+* Visit www.wazimap.co.za
+
 Indices and tables
 ==================
 

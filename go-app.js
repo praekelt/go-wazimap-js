@@ -25,6 +25,8 @@ go.app = function() {
         };
         
         self.states.add('states:start', function(name) {
+            /** Testing testing
+            */
             return new ChoiceState(name, {
                 question: 'Welcome to Wazimap! What would you like to do?',
         

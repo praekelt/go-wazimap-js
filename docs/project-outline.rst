@@ -1,4 +1,4 @@
-Wazimap over USSD & SMS
+Project overview and guidelines
 =======================
 
 Overview
