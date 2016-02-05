@@ -514,6 +514,8 @@ go.app = function() {
 
         /**:function: getProvinceData(section_id, section_name)
 
+                Lists the provincial codes and names. Calls the getHttp function and returns a 
+                promise of data for the catagory selected for all provinces queried.
         */
 
         function getProvinceData(section_id, section_name) {
@@ -537,7 +539,13 @@ go.app = function() {
 //functions for fetching specific section data
 
         /**:function: provincial_section(data, section_id, section_name)
+                
+                Returns a subsection of data received from the json query for the relevant province.
+                We need to navigate through the json query to access specific results.::
 
+                    eg. sub_section.demographics = function(data) {
+                            return "Population: " + data.total_population.values.this;
+                        }    
         */
 
         function provincial_section(data, section_id, section_name) {
